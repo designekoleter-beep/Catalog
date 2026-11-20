@@ -29,7 +29,7 @@ body{
 #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding-top:44px;padding-bottom:64px;z-index:2;perspective:2600px}
 #book{position:relative;width:var(--W);height:var(--H);touch-action:none;cursor:grab;transition:transform .7s cubic-bezier(.4,.1,.2,1)}
 #book:active{cursor:grabbing}
-.board{position:absolute;top:-9px;bottom:-9px;background:linear-gradient(145deg,#1f6b45,#134a2e);border-radius:6px;box-shadow:0 30px 55px rgba(70,0,0,.5),inset 0 0 0 2px rgba(233,196,106,.55);transition:opacity .5s}
+.board{display:none;position:absolute;top:-9px;bottom:-9px;background:linear-gradient(145deg,#1f6b45,#134a2e);border-radius:6px;box-shadow:0 6px 14px rgba(60,0,0,.35),inset 0 0 0 2px rgba(233,196,106,.55);transition:opacity .5s}
 .board.r{left:0;right:-10px;border-radius:4px 10px 10px 4px}
 .board.l{left:-10px;right:0;border-radius:10px 4px 4px 10px}
 .spread .board.r{left:50%}
@@ -43,7 +43,7 @@ body{
 .face.back::before{background:linear-gradient(270deg,rgba(0,0,0,.30),rgba(0,0,0,.08) 5%,transparent 14%)}
 .face::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.05));opacity:var(--s,0)}
 .single .face{border-radius:6px}
-#book.end .face{box-shadow:0 26px 46px rgba(70,0,0,.45)}
+#book.end .face{box-shadow:0 4px 12px rgba(60,0,0,.35)}
 
 /* ---------- controls ---------- */
 #ui{position:fixed;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;align-items:center;gap:18px;z-index:6}
@@ -92,7 +92,6 @@ body{
   <img src="photos/Katalog festiv-12.png">
   <img src="photos/foto last.png">
 </div>
-<!-- ================================================================= -->
 
 <div id="title"></div>
 <div id="garland"></div>
@@ -177,7 +176,7 @@ function render(){
       lf.style.zIndex = L - j;
       lf.style.visibility = a >= .999 ? "hidden" : "visible";
     }
-    lf.style.setProperty("--s", (Math.sin(Math.PI*a)*.55).toFixed(3));
+    lf.style.setProperty("--s", (Math.sin(Math.PI*a)*.3).toFixed(3));
   });
   /* centre the book when only one side is showing */
   if (spread){
