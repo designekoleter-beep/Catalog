@@ -3,229 +3,347 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>My Catalog</title>
+<title>Christmas Catalog</title>
 <style>
-:root{--pw:360px;--r:.75;--o:16px;
- --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .32 0 0 0 0 .2 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-*{box-sizing:border-box;margin:0}
-html,body{height:100%;overflow:hidden;overscroll-behavior:none}
-@supports (height:100dvh){html,body{height:100dvh}}
-body{font-family:Georgia,serif;-webkit-user-select:none;user-select:none;
-  background:radial-gradient(ellipse at 50% 30%,#e8303f,#d41b2e 55%,#c5142a)}
-#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-/* flex + margin:auto = "safe" centering: the book can never be pushed off the left edge */
-.stage{position:relative;z-index:1;height:calc(100% - 64px);display:flex;overflow:hidden;touch-action:pan-y;cursor:grab;padding-top:env(safe-area-inset-top)}
-.stage:active{cursor:grabbing}
-.book{flex:none;margin:auto;position:relative;width:var(--pw);height:calc(var(--pw)/var(--r));perspective:2400px;transition:transform .9s cubic-bezier(.5,.1,.2,1)}
-.book.double{width:calc(var(--pw)*2)}
-.board,.pile{position:absolute;top:0;height:100%;width:var(--pw);transition:opacity .3s .6s}
-.board{z-index:-3;background:linear-gradient(135deg,#127545,#0a4a2b);box-shadow:0 22px 34px rgba(80,0,10,.55),inset 0 0 0 2px #ffffff26,inset 0 0 0 7px #0a4a2b,inset 0 0 0 8px #d9b86a99}
-.board.r{left:0;width:calc(var(--pw) + var(--o));border-radius:3px 12px 12px 3px}
-.board.l{left:calc(var(--o)*-1);width:calc(var(--pw) + var(--o));border-radius:12px 3px 3px 12px}
-.double .board.r,.double .pile.r{left:50%}
-.double .board.l{left:calc(var(--o)*-1)}
-.pile{z-index:-2;background:#fbf6ea}
-.pile.l{left:0}
-.single .l{display:none}
-.leaf{position:absolute;top:0;left:0;width:var(--pw);height:100%;transform-origin:left center;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.5,.1,.2,1),opacity .2s .7s}
-.double .leaf{left:50%}
-.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border-radius:1px 5px 5px 1px;background:#fbf6ea}
-.back{transform:rotateY(180deg);border-radius:5px 1px 1px 5px}
-.face::before{content:"";position:absolute;inset:-8%;background:var(--img) center/cover;filter:blur(18px);opacity:.85}
-.face img{position:relative;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none}
-.face.plain::before{display:none}
-.miss{position:relative;height:100%;display:grid;place-items:center;padding:10%;text-align:center;color:#fff;background:#9c1426;font:600 1em Georgia,serif;word-break:break-word}
-.face.plain{background:radial-gradient(circle,#1b6b44,#0c4029);display:grid;place-items:center;font-size:4em;color:#ffffff88}
-.face::after{content:"";position:absolute;inset:0;pointer-events:none}
-.front::after{background:linear-gradient(90deg,rgba(40,20,0,.38),rgba(40,20,0,.08) 5%,rgba(255,255,255,.14) 7%,transparent 14%,transparent 93%,rgba(40,20,0,.14)),linear-gradient(115deg,rgba(255,255,255,.14),transparent 40%),var(--grain)}
-.back::after{background:linear-gradient(270deg,rgba(40,20,0,.38),rgba(40,20,0,.08) 5%,rgba(255,255,255,.14) 7%,transparent 14%,transparent 93%,rgba(40,20,0,.14)),linear-gradient(245deg,rgba(255,255,255,.14),transparent 40%),var(--grain)}
-.ctl{position:relative;z-index:3;height:64px;display:flex;align-items:center;justify-content:center;gap:1.2rem;color:#fff;font-size:.95rem;padding-bottom:env(safe-area-inset-bottom)}
-.ctl button{width:44px;height:44px;border-radius:50%;border:1px solid #ffffffbb;background:#ffffff26;color:#fff;font-size:1.3rem;cursor:pointer}
-.ctl button:hover:not(:disabled){background:#ffffff4d}.ctl button:disabled{opacity:.35;cursor:default}
-.ctl button:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.ctl span{min-width:6.5em;text-align:center}
-@media (prefers-reduced-motion:reduce){.book,.leaf{transition-duration:.01s}}
+:root{
+  --red:#d9202f; --red-deep:#a30f1d; --cream:#fbf1e0; --paper:#fffaf0;
+  --pine:#1f5a3c; --gold:#e9c46a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:"Palatino Linotype",Palatino,Georgia,serif;
+  color:var(--cream);
+  background:
+    radial-gradient(circle at 18% 22%,rgba(255,255,255,.16) 0 70px,transparent 71px),
+    radial-gradient(circle at 82% 30%,rgba(255,235,200,.12) 0 110px,transparent 111px),
+    radial-gradient(circle at 70% 85%,rgba(255,255,255,.10) 0 90px,transparent 91px),
+    radial-gradient(circle at 50% 38%,#f0323f 0%,#d9202f 48%,#aa1220 100%);
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+}
+#title{position:fixed;top:70px;left:0;right:0;text-align:center;font-size:clamp(20px,3.4vw,40px);letter-spacing:.04em;z-index:3;pointer-events:none;text-shadow:0 2px 10px rgba(0,0,0,.25)}
+#title:empty{display:none}
+
+/* ---------- book ---------- */
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding-top:44px;padding-bottom:64px;z-index:2;perspective:2600px}
+#book{position:relative;width:var(--W);height:var(--H);touch-action:none;cursor:grab;transition:transform .7s cubic-bezier(.4,.1,.2,1)}
+#book:active{cursor:grabbing}
+.board{position:absolute;top:-9px;bottom:-9px;background:linear-gradient(145deg,#1f6b45,#134a2e);border-radius:6px;box-shadow:0 30px 55px rgba(70,0,0,.5),inset 0 0 0 2px rgba(233,196,106,.55);transition:opacity .5s}
+.board.r{left:0;right:-10px;border-radius:4px 10px 10px 4px}
+.board.l{left:-10px;right:0;border-radius:10px 4px 4px 10px}
+.spread .board.r{left:50%}
+.spread .board.l{right:50%}
+.leaf{position:absolute;top:0;width:var(--W);height:var(--H);transform-origin:left center;transform-style:preserve-3d;will-change:transform}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--paper);overflow:hidden;border-radius:2px 6px 6px 2px}
+.face.back{transform:rotateY(180deg);border-radius:6px 2px 2px 6px}
+.face img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
+.face .miss{position:absolute;inset:14px;border:2px dashed rgba(163,15,29,.45);border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;color:#a30f1d;font-size:15px;line-height:1.4;word-break:break-all}
+.face::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.30),rgba(0,0,0,.08) 5%,transparent 14%)}
+.face.back::before{background:linear-gradient(270deg,rgba(0,0,0,.30),rgba(0,0,0,.08) 5%,transparent 14%)}
+.face::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.05));opacity:var(--s,0)}
+.single .face{border-radius:6px}
+#book.end .face{box-shadow:0 26px 46px rgba(70,0,0,.45)}
+
+/* ---------- controls ---------- */
+#ui{position:fixed;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;align-items:center;gap:18px;z-index:6}
+#ui button{width:50px;height:50px;border-radius:50%;border:2px solid var(--gold);background:var(--cream);color:var(--red-deep);font-size:24px;line-height:1;cursor:pointer;box-shadow:0 6px 16px rgba(80,0,0,.35);transition:transform .15s,opacity .2s}
+#ui button:active{transform:scale(.92)}
+#ui button:disabled{opacity:.35;cursor:default}
+#ui button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+#count{min-width:92px;text-align:center;font-size:17px;letter-spacing:.06em;text-shadow:0 1px 6px rgba(0,0,0,.3)}
+
+/* ---------- garland ---------- */
+#garland{position:fixed;top:0;left:0;right:0;height:0;z-index:5;pointer-events:none}
+#garland svg{position:absolute;top:0;left:0;overflow:visible}
+.bulb{position:absolute;width:12px;height:18px;margin:-3px 0 0 -6px;border-radius:50% 50% 55% 55%;background:var(--c);box-shadow:0 0 10px 3px var(--c),0 0 24px 8px color-mix(in srgb,var(--c) 45%,transparent);animation:tw 2.4s ease-in-out infinite;animation-delay:var(--d)}
+.bulb::before{content:"";position:absolute;left:3px;top:-5px;width:6px;height:6px;background:#3b3b3b;border-radius:1px}
+@keyframes tw{0%,100%{opacity:1;filter:brightness(1.15)}50%{opacity:.55;filter:brightness(.8)}}
+
+/* ---------- decorations ---------- */
+.deco{position:fixed;z-index:1;pointer-events:none}
+.ball{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff 0 7%,var(--c) 8% 55%,color-mix(in srgb,var(--c) 55%,#000) 100%);box-shadow:0 6px 12px rgba(60,0,0,.35)}
+.ball::before{content:"";position:absolute;left:50%;top:-7px;width:36%;height:9px;margin-left:-18%;background:var(--gold);border-radius:2px}
+.hang{position:fixed;z-index:5;pointer-events:none;transform-origin:top center;animation:sway 4s ease-in-out infinite;animation-delay:var(--d)}
+.hang i{position:absolute;left:0;top:0;width:1.5px;height:var(--len);background:rgba(255,235,200,.8)}
+.hang .ball{position:absolute;left:calc(var(--sz)/-2);top:var(--len)}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+#snow{position:fixed;inset:0;z-index:4;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.bulb,.hang{animation:none}}
 </style>
 </head>
 <body>
-<div class="stage" id="stage"><div class="book" id="book"></div></div>
+
+<!-- =====================  PUT YOUR PHOTOS HERE  =====================
+     Each <img> = one page. First = cover, last = back cover.
+     Just change the src names (or add / delete lines). -->
+<div id="pages" hidden>
+  <img src="photos/Katalog festiv-01.png">
+  <img src="photos/Katalog festiv-02.png">
+  <img src="photos/Katalog festiv-03.png">
+  <img src="photos/Katalog festiv-04.png">
+  <img src="photos/Katalog festiv-05.png">
+  <img src="photos/Katalog festiv-06.png">
+  <img src="photos/Katalog festiv-07.png">
+  <img src="photos/Katalog festiv-08.png">
+  <img src="photos/Katalog festiv-09.png">
+  <img src="photos/Katalog festiv-10.png">
+  <img src="photos/Katalog festiv-11.png">
+  <img src="photos/Katalog festiv-12.png">
+  <img src="photos/foto last.png">
+</div>
+<!-- ================================================================= -->
+
+<div id="title"></div>
+<div id="garland"></div>
+<div id="decoL" class="deco"></div>
+<div id="decoR" class="deco"></div>
+
+<div id="stage"><div id="book" aria-label="Catalog book"></div></div>
+
+<div id="ui">
+  <button id="prev" aria-label="Previous page">&#8249;</button>
+  <div id="count"></div>
+  <button id="next" aria-label="Next page">&#8250;</button>
+</div>
 <canvas id="snow"></canvas>
-<div class="ctl"><button id="prev" aria-label="Previous page">&#8249;</button><span id="count"></span><button id="next" aria-label="Next page">&#8250;</button></div>
 
 <script>
-/* ====== EDIT HERE ====== */
-const TITLE = "Write Your Title Here";   // shows in the browser tab
+/* =====================  EDIT HERE  ===================== */
+const TITLE = "";                 // write your website title here (empty = no title)
+const IMAGE_FOLDER = "";
+const PAGES = [...document.querySelectorAll("#pages img")].map(i => i.getAttribute("src"));   // read from the <img> tags in the HTML
+let PAGE_RATIO = 3/4;           // page width / height (3/4 = tall page, 1 = square, 4/3 = wide)
+/* ======================================================= */
 
-// YOUR PHOTOS: put your png files in a folder called "photos" next to this file,
-// then write each name below, in order. Every name you add = one new page.
-// The FIRST photo is the cover, the LAST is the back cover. Photos are shown whole.
-const PHOTOS = [
-  "photos/Katalog festiv-01.png",
-  "photos/Katalog festiv-02.png",
-  "photos/Katalog festiv-03.png",
-  "photos/Katalog festiv-04.png",
-  "photos/Katalog festiv-05.png",
-  "photos/Katalog festiv-06.png",
-  "photos/Katalog festiv-07.png",
-  "photos/Katalog festiv-08.png",
-  "photos/Katalog festiv-09.png",
-  "photos/Katalog festiv-10.png",
-  "photos/Katalog festiv-11.png",
-  "photos/Katalog festiv-12.png",
-  "photos/foto last.png",
-  
-];
+const $ = s => document.querySelector(s);
+const book = $("#book"), N = PAGES.length;
+$("#title").textContent = TITLE;
+let SP = [], spread = false, L = 0, cur = 0, A = [], leaves = [], busy = false, W = 0, H = 0;
 
-// Sample pages, shown only while the list above is empty
-const SAMPLES = [
-  ph(600,800,"#1b6b44","Katalog festiv-02.png"),
-  ph(600,800,"#b08a2e","Photo 2"),
-  ph(640,800,"#2f5f9a","Photo 3"),
-  ph(600,820,"#8a3a6a","Photo 4"),
-  ph(600,800,"#1b6b44","Photo 5"),
-  ph(600,800,"#b08a2e","Last photo")
-];
-/* ====== END EDIT ====== */
+const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
 
-function ph(w,h,c,t){
-  const s=`<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'><rect width='100%' height='100%' fill='${c}'/><text x='50%' y='50%' font-size='${h*.07}' text-anchor='middle' fill='white' font-family='Georgia'>${t}</text></svg>`;
-  return 'data:image/svg+xml,'+encodeURIComponent(s);
-}
-document.title = TITLE;
-const url = p => p.startsWith('data:') ? p : p.split('/').map(encodeURIComponent).join('/');
-const LIST = PHOTOS.length ? PHOTOS : SAMPLES;
-let pages = [];
-function setPages(){
-  pages = LIST.slice();
-  if (pages.length % 2) pages.splice(pages.length-1, 0, null); // festive blank page so spreads line up
-}
-
-const book=document.getElementById('book'), stage=document.getElementById('stage');
-const prev=document.getElementById('prev'), next=document.getElementById('next'), count=document.getElementById('count');
-let single, leaves=[], N=0, cur=0, pw=360, ratio=.75, drag=null, bL, bR, pL, pR;
-const max=()=>single?N-1:N;
-/* one page at a time on phones (portrait or narrow); two-page spread only on wide, landscape screens */
-const wantSingle=()=>innerWidth<820 || innerWidth<innerHeight*1.15;
-
-function face(cls,p){
-  const u = p ? url(p) : '';
-  return `<div class="face ${cls}${p?'':' plain'}" ${p?`style="--img:url('${u}')"`:''}>${p?`<img src="${u}" data-name="${p.replace(/"/g,'')}" alt="">`:'❄'}</div>`;
-}
-/* if a photo file is not found, the page says which name is wrong */
-book.addEventListener('error',e=>{
-  const im=e.target; if(im.tagName!=='IMG') return;
-  im.parentElement.style.setProperty('--img','none');
-  const m=document.createElement('div'); m.className='miss';
-  m.textContent='Photo not found: '+im.dataset.name; im.replaceWith(m);
-},true);
-function build(){
-  single = wantSingle();
-  book.className = 'book ' + (single?'single':'double');
-  book.innerHTML='<div class="board l"></div><div class="board r"></div><div class="pile l"></div><div class="pile r"></div>';
-  [bL,bR,pL,pR]=[...book.children]; leaves=[]; cur=0;
-  N = single ? pages.length : pages.length/2;
-  for(let i=0;i<N;i++){
-    const l=document.createElement('div'); l.className='leaf';
-    l.innerHTML = face('front', single?pages[i]:pages[2*i]) + face('back', single?null:pages[2*i+1]);
-    book.appendChild(l); leaves.push(l);
+function pageEl(i, back){
+  const d = document.createElement("div");
+  d.className = "face" + (back ? " back" : "");
+  const list = spread ? SP : PAGES;
+  if (i >= 0 && i < list.length && list[i]){
+    const img = new Image();
+    img.draggable = false; img.alt = "Page " + (i+1);
+    img.src = IMAGE_FOLDER + list[i];
+    img.onerror = () => { img.remove(); const m=document.createElement("div"); m.className="miss"; m.textContent="Photo not found: "+IMAGE_FOLDER+list[i]; d.prepend(m); };
+    d.appendChild(img);
   }
-  size(); render();
-}
-/* size the book from the REAL space available, so it always fits on screen */
-function size(){
-  const cs=getComputedStyle(stage);
-  const aw=stage.clientWidth;
-  const ah=stage.clientHeight-parseFloat(cs.paddingTop||0)-24;
-  const o=16, side=o*2+8;                       // room for the cover edge + a little margin
-  const byW = single ? aw-side : (aw-side)/2;   // width one page may use
-  pw = Math.max(120, Math.min(byW, ah*ratio));
-  document.documentElement.style.setProperty('--pw', pw+'px');
-  document.documentElement.style.setProperty('--r', ratio);
-}
-function pileShadow(n,dir){ // stack of page edges peeking out
-  const m=Math.min(n,9), a=[];
-  for(let k=1;k<=m;k++) a.push(`${dir*k*1.6}px ${k*1.6}px 0 ${k%2?'#e9dfc8':'#fbf6ea'}`);
-  return a.join(',')||'none';
-}
-function render(mov){
-  leaves.forEach((l,i)=>{
-    l.style.transition=''; l.style.transform=`rotateY(${i<cur?-180:0}deg)`;
-    l.style.zIndex = i===mov ? 100 : (i<cur ? i : N-i);
-    l.style.opacity = single && i<cur ? 0 : 1;
-  });
-  if(mov!=null) setTimeout(()=>leaves.forEach((l,i)=>l.style.zIndex=i<cur?i:N-i),950);
-  book.style.transform = single ? '' : `translateX(${cur===0?-pw/2:cur===N?pw/2:0}px)`;
-  const right=single?N-cur-1:N-cur, left=single?0:cur;
-  pR.style.boxShadow=pileShadow(right,1); pL.style.boxShadow=pileShadow(left,-1);
-  const showR=single?true:cur<N, showL=!single&&cur>0;
-  bR.style.opacity=pR.style.opacity=showR?1:0; bL.style.opacity=pL.style.opacity=showL?1:0;
-  prev.disabled = cur===0; next.disabled = cur===max();
-  const t=pages.length;
-  count.textContent = single ? `${cur+1} / ${t}` : (cur===0?`1 / ${t}`:cur===N?`${t} / ${t}`:`${2*cur}–${2*cur+1} / ${t}`);
-}
-function go(d){
-  const t=cur+d; if(t<0||t>max()) return;
-  const mov = d>0 ? cur : t; cur=t; render(mov);
+  return d;
 }
 
-stage.addEventListener('pointerdown',e=>{drag={x:e.clientX,dir:0,p:0,moved:false,bad:false}; stage.setPointerCapture(e.pointerId);});
-stage.addEventListener('pointermove',e=>{
-  if(!drag||drag.bad) return;
-  const dx=e.clientX-drag.x;
-  if(!drag.dir){
-    if(Math.abs(dx)<8) return;
-    drag.dir = dx<0 ? 1 : -1;
-    if((drag.dir>0&&cur>=max())||(drag.dir<0&&cur<=0)){drag.bad=true;return;}
-    drag.i = drag.dir>0 ? cur : cur-1;
+function build(keepPage){
+  const vw = innerWidth, vh = innerHeight;
+  spread = vw >= 900 && vw > vh;
+  const availH = vh - 44 - 64 - 80;
+  const availW = spread ? (vw - 90) / 2 : vw - 28;
+  W = Math.floor(Math.min(availW, availH * PAGE_RATIO)); H = Math.floor(W / PAGE_RATIO);
+  book.style.setProperty("--W", W + "px"); book.style.setProperty("--H", H + "px");
+  book.style.width = (spread ? W*2 : W) + "px";
+  book.className = spread ? "spread" : "single";
+  book.innerHTML = "";
+  const br = document.createElement("div"); br.className = "board r"; book.appendChild(br);
+  if (spread){ const bl = document.createElement("div"); bl.className = "board l"; book.appendChild(bl); }
+  /* odd number of photos: put the empty sheet before the last photo, so the last photo is always the final page */
+  SP = N % 2 ? [...PAGES.slice(0,N-1), "", PAGES[N-1]] : PAGES;
+  L = spread ? SP.length/2 : N;
+  cur = spread ? Math.min(L, Math.ceil(keepPage/2)) : Math.min(L, keepPage);
+  A = []; leaves = [];
+  for (let j=0;j<L;j++){
+    const lf = document.createElement("div"); lf.className = "leaf";
+    if (spread){
+      lf.style.left = W + "px";
+      lf.appendChild(pageEl(2*j, false)); lf.appendChild(pageEl(2*j+1, true));
+    } else lf.appendChild(pageEl(j, false));
+    book.appendChild(lf); leaves.push(lf); A.push(j < cur ? 1 : 0);
   }
-  drag.moved=true;
-  drag.p=Math.max(0,Math.min(1,(-dx*drag.dir)/(pw*1.1)));
-  const a = drag.dir>0 ? -180*drag.p : -180*(1-drag.p);
-  const l=leaves[drag.i]; l.style.transition='none'; l.style.zIndex=100; l.style.opacity=1; l.style.transform=`rotateY(${a}deg)`;
-});
-function end(){
-  if(!drag) return;
-  const d=drag; drag=null;
-  if(d.bad) return;
-  if(!d.moved){ go(d.x>innerWidth/2?1:-1); return; }
-  if(d.p>.25) cur+=d.dir;
-  render(d.i);
-}
-stage.addEventListener('pointerup',end);
-stage.addEventListener('pointercancel',end);
-prev.onclick=()=>go(-1); next.onclick=()=>go(1);
-addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
-function onResize(){ if(wantSingle()!==single) build(); else {size();render();} }
-addEventListener('resize',onResize);
-addEventListener('orientationchange',()=>setTimeout(onResize,250));
-
-/* start / rebuild the book; page shape follows your first photo */
-function start(){
-  setPages();
-  const probe=new Image();
-  probe.onload=()=>{ratio=Math.max(.55,Math.min(1.3,probe.naturalWidth/probe.naturalHeight)); build();};
-  probe.onerror=()=>build();
-  probe.src=url(LIST[0]);
+  render();
 }
 
-start();
-
-/* falling snow */
-(function(){
-  const c=document.getElementById('snow'),x=c.getContext('2d');
-  let W,H,f=[];
-  const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
-  function fit(){W=c.width=innerWidth;H=c.height=innerHeight;f=Array.from({length:Math.round(W*H/9000)},()=>({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*3,s:.4+Math.random()*1.2,d:Math.random()*6}));}
-  function tick(t){
-    x.clearRect(0,0,W,H);x.fillStyle='rgba(255,255,255,.9)';
-    for(const p of f){
-      if(!still){p.y+=p.s;p.x+=Math.sin(t/1500+p.d)*.5;if(p.y>H+5){p.y=-5;p.x=Math.random()*W;}}
-      x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();
+function render(){
+  leaves.forEach((lf,j)=>{
+    const a = A[j];
+    if (spread){
+      lf.style.transform = `rotateY(${-180*a}deg)`;
+      lf.style.zIndex = a < .5 ? L - j : j;
+    } else {
+      lf.style.transform = `rotateY(${-100*a}deg)`;
+      lf.style.opacity = a > .8 ? Math.max(0,(1-a)/.2) : 1;
+      lf.style.zIndex = L - j;
+      lf.style.visibility = a >= .999 ? "hidden" : "visible";
     }
-    if(!still)requestAnimationFrame(tick);
+    lf.style.setProperty("--s", (Math.sin(Math.PI*a)*.55).toFixed(3));
+  });
+  /* centre the book when only one side is showing */
+  if (spread){
+    book.style.transform = cur===0 ? `translateX(-25%)` : cur===L ? `translateX(25%)` : "translateX(0)";
+    const r = book.querySelector(".board.r"), l = book.querySelector(".board.l");
+    r.style.opacity = cur===L ? 0 : 1; l.style.opacity = (cur===0 || cur===L) ? 0 : 1;
+    book.classList.toggle("end", cur===0 || cur===L);
   }
-  addEventListener('resize',fit);fit();requestAnimationFrame(tick);
+  $("#prev").disabled = cur<=0; $("#next").disabled = cur>=L;
+  let t;
+  if (spread) t = cur===0 ? `1 / ${N}` : cur===L ? `${N} / ${N}` : `${2*cur}–${2*cur+1} / ${N}`;
+  else t = `${Math.min(cur+1,N)} / ${N}`;
+  $("#count").textContent = t;
+}
+
+function tween(j, to, done){
+  busy = true;
+  const from = A[j], dur = 160 + 620*Math.abs(to-from), t0 = performance.now();
+  (function step(now){
+    const k = Math.min(1,(now-t0)/dur);
+    A[j] = from + (to-from)*ease(k); render();
+    if (k<1) requestAnimationFrame(step); else { A[j]=to; busy=false; done&&done(); }
+  })(t0);
+}
+function go(dir){
+  if (busy) return;
+  if (dir>0 && cur<L){ tween(cur,1,()=>{cur++;render();}); }
+  else if (dir<0 && cur>0){ tween(cur-1,0,()=>{cur--;render();}); }
+}
+
+/* ---- drag / swipe / tap ---- */
+let drag = null;
+book.addEventListener("pointerdown", e=>{
+  if (busy) return;
+  drag = {x:e.clientX, t:performance.now(), dir:0, j:-1, moved:false, lx:e.clientX, lt:performance.now(), v:0};
+  book.setPointerCapture(e.pointerId);
+});
+book.addEventListener("pointermove", e=>{
+  if (!drag) return;
+  const dx = e.clientX - drag.x;
+  if (!drag.dir && Math.abs(dx) > 8){
+    drag.dir = dx<0 ? 1 : -1;
+    drag.j = drag.dir>0 ? cur : cur-1;
+    if (drag.j<0 || drag.j>=L){ drag = null; return; }
+  }
+  if (drag.dir){
+    drag.moved = true;
+    const p = Math.min(1, Math.abs(dx) / (spread ? W*1.1 : W*.8));
+    A[drag.j] = drag.dir>0 ? p : 1-p; render();
+    const now = performance.now(); drag.v = (e.clientX-drag.lx)/Math.max(1,now-drag.lt); drag.lx=e.clientX; drag.lt=now;
+  }
+});
+function endDrag(e){
+  if (!drag) return;
+  const d = drag; drag = null;
+  if (!d.moved){
+    const r = book.getBoundingClientRect();
+    go(e.clientX > r.left + r.width/2 ? 1 : -1); return;
+  }
+  const flipped = d.dir>0 ? A[d.j] : 1-A[d.j];
+  const fast = Math.abs(d.v) > .5 && Math.sign(d.v) === -d.dir;
+  const ok = flipped > .28 || fast;
+  const target = d.dir>0 ? (ok?1:0) : (ok?0:1);
+  tween(d.j, target, ()=>{ if(ok){ cur += d.dir; } render(); });
+}
+book.addEventListener("pointerup", endDrag);
+book.addEventListener("pointercancel", endDrag);
+$("#next").onclick = ()=>go(1); $("#prev").onclick = ()=>go(-1);
+addEventListener("keydown", e=>{ if(e.key==="ArrowRight") go(1); if(e.key==="ArrowLeft") go(-1); });
+
+/* ---- garland lights ---- */
+const COLORS = ["#ff4b4b","#ffd34d","#5bd16f","#4db8ff","#ff8ad8","#fff1b8"];
+const rnd = (a,b)=>a+Math.random()*(b-a);
+function buildGarland(){
+  const g = $("#garland"); g.innerHTML = "";
+  document.querySelectorAll(".hang").forEach(n=>n.remove());
+  const w = innerWidth, seg = w<600 ? 110 : 160, n = Math.ceil(w/seg), sag = w<600 ? 16 : 24;
+  let d = "M0,6";
+  for (let i=0;i<n;i++) d += ` Q${i*seg+seg/2},${6+sag*2} ${(i+1)*seg},6`;
+  g.insertAdjacentHTML("beforeend",
+    `<svg width="${w}" height="${sag*2+20}"><path d="${d}" fill="none" stroke="#164a30" stroke-width="7" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#3c9a63" stroke-width="3" stroke-dasharray="2 5" stroke-linecap="round"/></svg>`);
+  let k = 0;
+  for (let i=0;i<n;i++){
+    const x0=i*seg, xc=x0+seg/2, x1=x0+seg;
+    [.2,.5,.8].forEach(t=>{
+      const x=(1-t)*(1-t)*x0+2*(1-t)*t*xc+t*t*x1, y=(1-t)*(1-t)*6+2*(1-t)*t*(6+sag*2)+t*t*6;
+      const b = document.createElement("div"); b.className="bulb";
+      b.style.cssText = `left:${x}px;top:${y}px;--c:${COLORS[k++%COLORS.length]};--d:${(-Math.random()*2.4).toFixed(2)}s`;
+      g.appendChild(b);
+      if (t===.5 && i%2===1 && i>0 && i<n-1){
+        const sz = rnd(26,36), h = document.createElement("div"); h.className="hang";
+        h.style.cssText = `left:${x}px;top:${y+10}px;--len:${rnd(30,80)}px;--sz:${sz}px;--d:${(-Math.random()*4).toFixed(1)}s`;
+        h.innerHTML = `<i></i><div class="ball" style="--c:${["#c8102e","#e9c46a","#1f7a4d","#f2e6d0"][i%4]};width:${sz}px;height:${sz}px"></div>`;
+        document.body.appendChild(h);
+      }
+    });
+  }
+}
+
+/* ---- pine branches + ornaments in the corners ---- */
+function branch(w){
+  const h = w*.5, mid = h/2; let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><path d="M0,${mid} Q${w/2},${mid-8} ${w},${mid}" stroke="#4a2f1b" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  for (let t=.03;t<.97;t+=.03){
+    const x=t*w, len=(1-t*.72)*h*.5, c=Math.random()<.5?"#1f5a3c":"#2f7f50";
+    for (const sg of [-1,1]){
+      s += `<line x1="${x}" y1="${mid}" x2="${x+len*.55}" y2="${mid+sg*len}" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`;
+      s += `<line x1="${x}" y1="${mid}" x2="${x+len*.9}" y2="${mid+sg*len*.55}" stroke="#143f2a" stroke-width="2.6" stroke-linecap="round"/>`;
+    }
+  }
+  return s + "</svg>";
+}
+function buildDeco(){
+  const small = innerWidth < 700, w = small ? 190 : Math.min(420, innerWidth*.3);
+  const L_ = $("#decoL"), R_ = $("#decoR");
+  L_.style.cssText = `left:-12px;bottom:${small?60:-6}px;transform-origin:left bottom;transform:rotate(-12deg)`;
+  R_.style.cssText = `right:-12px;bottom:${small?60:-6}px;transform-origin:right bottom;transform:scaleX(-1) rotate(-12deg)`;
+  L_.innerHTML = R_.innerHTML = "";
+  for (const el of [L_,R_]){
+    el.insertAdjacentHTML("beforeend", branch(w));
+    el.insertAdjacentHTML("beforeend", branch(w*.75).replace("<svg",`<svg style="position:absolute;left:12px;top:${w*.18}px;transform:rotate(-26deg)"`));
+    const cols = ["#c8102e","#e9c46a","#f2e6d0","#1f7a4d"];
+    [[.2,.38,small?22:34],[.45,.5,small?16:26],[.62,.3,small?20:30],[.3,.6,small?14:20]].forEach(([x,y,sz],i)=>{
+      el.insertAdjacentHTML("beforeend",`<div class="ball" style="--c:${cols[i%4]};width:${sz}px;height:${sz}px;left:${x*w}px;top:${y*w*.5}px"></div>`);
+    });
+  }
+}
+
+/* ---- falling snow ---- */
+const cv = $("#snow"), cx = cv.getContext("2d"); let flakes = [];
+function sizeSnow(){
+  const dpr = Math.min(2, devicePixelRatio||1);
+  cv.width = innerWidth*dpr; cv.height = innerHeight*dpr; cx.setTransform(dpr,0,0,dpr,0,0);
+  const count = matchMedia("(prefers-reduced-motion:reduce)").matches ? 40 : Math.round(innerWidth*innerHeight/9000)+60;
+  flakes = Array.from({length:count},()=>({x:rnd(0,innerWidth),y:rnd(0,innerHeight),r:rnd(1.2,4.6),v:rnd(.4,1.5),p:rnd(0,6.28),a:rnd(.5,.95)}));
+}
+let tt = 0;
+(function snow(){
+  cx.clearRect(0,0,innerWidth,innerHeight); tt += .01;
+  for (const f of flakes){
+    f.y += f.v*(.6+f.r*.25); f.x += Math.sin(tt*2+f.p)*.5*(f.r/3);
+    if (f.y > innerHeight+6){ f.y = -6; f.x = rnd(0,innerWidth); }
+    cx.beginPath(); cx.arc(f.x,f.y,f.r,0,6.283);
+    cx.fillStyle = `rgba(255,255,255,${f.a})`; cx.shadowColor = "rgba(255,255,255,.9)"; cx.shadowBlur = f.r*2.2; cx.fill();
+  }
+  requestAnimationFrame(snow);
 })();
+
+/* ---- start ---- */
+function pageNow(){ return spread ? cur*2 : cur; }
+let rt; let first = true;
+function layout(){
+  build(first ? 0 : Math.min(N-1, pageNow()));
+  first = false; buildGarland(); buildDeco(); sizeSnow();
+}
+addEventListener("resize", ()=>{ clearTimeout(rt); rt = setTimeout(layout, 180); });
+layout();
+
+/* the book takes the shape of your cover photo, so photos fit the pages exactly */
+const probe = new Image();
+probe.onload = () => {
+  if (probe.naturalWidth && probe.naturalHeight){
+    PAGE_RATIO = Math.min(2.5, Math.max(.4, probe.naturalWidth / probe.naturalHeight));
+    layout();
+  }
+};
+probe.src = IMAGE_FOLDER + PAGES[0];
 </script>
 </body>
 </html>
