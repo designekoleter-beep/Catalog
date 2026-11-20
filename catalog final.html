@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Catalog</title>
+<style>
+:root{--pw:360px;--r:.75;--o:16px;
+ --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .32 0 0 0 0 .2 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+@supports (height:100dvh){html,body{height:100dvh}}
+body{font-family:Georgia,serif;-webkit-user-select:none;user-select:none;
+  background:radial-gradient(ellipse at 50% 30%,#e8303f,#d41b2e 55%,#c5142a)}
+#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+/* flex + margin:auto = "safe" centering: the book can never be pushed off the left edge */
+.stage{position:relative;z-index:1;height:calc(100% - 64px);display:flex;overflow:hidden;touch-action:pan-y;cursor:grab;padding-top:env(safe-area-inset-top)}
+.stage:active{cursor:grabbing}
+.book{flex:none;margin:auto;position:relative;width:var(--pw);height:calc(var(--pw)/var(--r));perspective:2400px;transition:transform .9s cubic-bezier(.5,.1,.2,1)}
+.book.double{width:calc(var(--pw)*2)}
+.board,.pile{position:absolute;top:0;height:100%;width:var(--pw);transition:opacity .3s .6s}
+.board{z-index:-3;background:linear-gradient(135deg,#127545,#0a4a2b);box-shadow:0 22px 34px rgba(80,0,10,.55),inset 0 0 0 2px #ffffff26,inset 0 0 0 7px #0a4a2b,inset 0 0 0 8px #d9b86a99}
+.board.r{left:0;width:calc(var(--pw) + var(--o));border-radius:3px 12px 12px 3px}
+.board.l{left:calc(var(--o)*-1);width:calc(var(--pw) + var(--o));border-radius:12px 3px 3px 12px}
+.double .board.r,.double .pile.r{left:50%}
+.double .board.l{left:calc(var(--o)*-1)}
+.pile{z-index:-2;background:#fbf6ea}
+.pile.l{left:0}
+.single .l{display:none}
+.leaf{position:absolute;top:0;left:0;width:var(--pw);height:100%;transform-origin:left center;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.5,.1,.2,1),opacity .2s .7s}
+.double .leaf{left:50%}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border-radius:1px 5px 5px 1px;background:#fbf6ea}
+.back{transform:rotateY(180deg);border-radius:5px 1px 1px 5px}
+.face::before{content:"";position:absolute;inset:-8%;background:var(--img) center/cover;filter:blur(18px);opacity:.85}
+.face img{position:relative;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none}
+.face.plain::before{display:none}
+.miss{position:relative;height:100%;display:grid;place-items:center;padding:10%;text-align:center;color:#fff;background:#9c1426;font:600 1em Georgia,serif;word-break:break-word}
+.face.plain{background:radial-gradient(circle,#1b6b44,#0c4029);display:grid;place-items:center;font-size:4em;color:#ffffff88}
+.face::after{content:"";position:absolute;inset:0;pointer-events:none}
+.front::after{background:linear-gradient(90deg,rgba(40,20,0,.38),rgba(40,20,0,.08) 5%,rgba(255,255,255,.14) 7%,transparent 14%,transparent 93%,rgba(40,20,0,.14)),linear-gradient(115deg,rgba(255,255,255,.14),transparent 40%),var(--grain)}
+.back::after{background:linear-gradient(270deg,rgba(40,20,0,.38),rgba(40,20,0,.08) 5%,rgba(255,255,255,.14) 7%,transparent 14%,transparent 93%,rgba(40,20,0,.14)),linear-gradient(245deg,rgba(255,255,255,.14),transparent 40%),var(--grain)}
+.ctl{position:relative;z-index:3;height:64px;display:flex;align-items:center;justify-content:center;gap:1.2rem;color:#fff;font-size:.95rem;padding-bottom:env(safe-area-inset-bottom)}
+.ctl button{width:44px;height:44px;border-radius:50%;border:1px solid #ffffffbb;background:#ffffff26;color:#fff;font-size:1.3rem;cursor:pointer}
+.ctl button:hover:not(:disabled){background:#ffffff4d}.ctl button:disabled{opacity:.35;cursor:default}
+.ctl button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.ctl span{min-width:6.5em;text-align:center}
+@media (prefers-reduced-motion:reduce){.book,.leaf{transition-duration:.01s}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage"><div class="book" id="book"></div></div>
+<canvas id="snow"></canvas>
+<div class="ctl"><button id="prev" aria-label="Previous page">&#8249;</button><span id="count"></span><button id="next" aria-label="Next page">&#8250;</button></div>
+
+<script>
+/* ====== EDIT HERE ====== */
+const TITLE = "Write Your Title Here";   // shows in the browser tab
+
+// YOUR PHOTOS: put your png files in a folder called "photos" next to this file,
+// then write each name below, in order. Every name you add = one new page.
+// The FIRST photo is the cover, the LAST is the back cover. Photos are shown whole.
+const PHOTOS = [
+  "photos/Katalog festiv-01.png",
+  "photos/Katalog festiv-02.png",
+  "photos/Katalog festiv-03.png",
+  "photos/Katalog festiv-04.png",
+  "photos/Katalog festiv-05.png",
+  "photos/Katalog festiv-06.png",
+  "photos/Katalog festiv-07.png",
+  "photos/Katalog festiv-08.png",
+  "photos/Katalog festiv-09.png",
+  "photos/Katalog festiv-10.png",
+  "photos/Katalog festiv-11.png",
+  "photos/Katalog festiv-12.png",
+  "photos/foto last.png",
+  
+];
+
+// Sample pages, shown only while the list above is empty
+const SAMPLES = [
+  ph(600,800,"#1b6b44","Katalog festiv-02.png"),
+  ph(600,800,"#b08a2e","Photo 2"),
+  ph(640,800,"#2f5f9a","Photo 3"),
+  ph(600,820,"#8a3a6a","Photo 4"),
+  ph(600,800,"#1b6b44","Photo 5"),
+  ph(600,800,"#b08a2e","Last photo")
+];
+/* ====== END EDIT ====== */
+
+function ph(w,h,c,t){
+  const s=`<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'><rect width='100%' height='100%' fill='${c}'/><text x='50%' y='50%' font-size='${h*.07}' text-anchor='middle' fill='white' font-family='Georgia'>${t}</text></svg>`;
+  return 'data:image/svg+xml,'+encodeURIComponent(s);
+}
+document.title = TITLE;
+const url = p => p.startsWith('data:') ? p : p.split('/').map(encodeURIComponent).join('/');
+const LIST = PHOTOS.length ? PHOTOS : SAMPLES;
+let pages = [];
+function setPages(){
+  pages = LIST.slice();
+  if (pages.length % 2) pages.splice(pages.length-1, 0, null); // festive blank page so spreads line up
+}
+
+const book=document.getElementById('book'), stage=document.getElementById('stage');
+const prev=document.getElementById('prev'), next=document.getElementById('next'), count=document.getElementById('count');
+let single, leaves=[], N=0, cur=0, pw=360, ratio=.75, drag=null, bL, bR, pL, pR;
+const max=()=>single?N-1:N;
+/* one page at a time on phones (portrait or narrow); two-page spread only on wide, landscape screens */
+const wantSingle=()=>innerWidth<820 || innerWidth<innerHeight*1.15;
+
+function face(cls,p){
+  const u = p ? url(p) : '';
+  return `<div class="face ${cls}${p?'':' plain'}" ${p?`style="--img:url('${u}')"`:''}>${p?`<img src="${u}" data-name="${p.replace(/"/g,'')}" alt="">`:'❄'}</div>`;
+}
+/* if a photo file is not found, the page says which name is wrong */
+book.addEventListener('error',e=>{
+  const im=e.target; if(im.tagName!=='IMG') return;
+  im.parentElement.style.setProperty('--img','none');
+  const m=document.createElement('div'); m.className='miss';
+  m.textContent='Photo not found: '+im.dataset.name; im.replaceWith(m);
+},true);
+function build(){
+  single = wantSingle();
+  book.className = 'book ' + (single?'single':'double');
+  book.innerHTML='<div class="board l"></div><div class="board r"></div><div class="pile l"></div><div class="pile r"></div>';
+  [bL,bR,pL,pR]=[...book.children]; leaves=[]; cur=0;
+  N = single ? pages.length : pages.length/2;
+  for(let i=0;i<N;i++){
+    const l=document.createElement('div'); l.className='leaf';
+    l.innerHTML = face('front', single?pages[i]:pages[2*i]) + face('back', single?null:pages[2*i+1]);
+    book.appendChild(l); leaves.push(l);
+  }
+  size(); render();
+}
+/* size the book from the REAL space available, so it always fits on screen */
+function size(){
+  const cs=getComputedStyle(stage);
+  const aw=stage.clientWidth;
+  const ah=stage.clientHeight-parseFloat(cs.paddingTop||0)-24;
+  const o=16, side=o*2+8;                       // room for the cover edge + a little margin
+  const byW = single ? aw-side : (aw-side)/2;   // width one page may use
+  pw = Math.max(120, Math.min(byW, ah*ratio));
+  document.documentElement.style.setProperty('--pw', pw+'px');
+  document.documentElement.style.setProperty('--r', ratio);
+}
+function pileShadow(n,dir){ // stack of page edges peeking out
+  const m=Math.min(n,9), a=[];
+  for(let k=1;k<=m;k++) a.push(`${dir*k*1.6}px ${k*1.6}px 0 ${k%2?'#e9dfc8':'#fbf6ea'}`);
+  return a.join(',')||'none';
+}
+function render(mov){
+  leaves.forEach((l,i)=>{
+    l.style.transition=''; l.style.transform=`rotateY(${i<cur?-180:0}deg)`;
+    l.style.zIndex = i===mov ? 100 : (i<cur ? i : N-i);
+    l.style.opacity = single && i<cur ? 0 : 1;
+  });
+  if(mov!=null) setTimeout(()=>leaves.forEach((l,i)=>l.style.zIndex=i<cur?i:N-i),950);
+  book.style.transform = single ? '' : `translateX(${cur===0?-pw/2:cur===N?pw/2:0}px)`;
+  const right=single?N-cur-1:N-cur, left=single?0:cur;
+  pR.style.boxShadow=pileShadow(right,1); pL.style.boxShadow=pileShadow(left,-1);
+  const showR=single?true:cur<N, showL=!single&&cur>0;
+  bR.style.opacity=pR.style.opacity=showR?1:0; bL.style.opacity=pL.style.opacity=showL?1:0;
+  prev.disabled = cur===0; next.disabled = cur===max();
+  const t=pages.length;
+  count.textContent = single ? `${cur+1} / ${t}` : (cur===0?`1 / ${t}`:cur===N?`${t} / ${t}`:`${2*cur}–${2*cur+1} / ${t}`);
+}
+function go(d){
+  const t=cur+d; if(t<0||t>max()) return;
+  const mov = d>0 ? cur : t; cur=t; render(mov);
+}
+
+stage.addEventListener('pointerdown',e=>{drag={x:e.clientX,dir:0,p:0,moved:false,bad:false}; stage.setPointerCapture(e.pointerId);});
+stage.addEventListener('pointermove',e=>{
+  if(!drag||drag.bad) return;
+  const dx=e.clientX-drag.x;
+  if(!drag.dir){
+    if(Math.abs(dx)<8) return;
+    drag.dir = dx<0 ? 1 : -1;
+    if((drag.dir>0&&cur>=max())||(drag.dir<0&&cur<=0)){drag.bad=true;return;}
+    drag.i = drag.dir>0 ? cur : cur-1;
+  }
+  drag.moved=true;
+  drag.p=Math.max(0,Math.min(1,(-dx*drag.dir)/(pw*1.1)));
+  const a = drag.dir>0 ? -180*drag.p : -180*(1-drag.p);
+  const l=leaves[drag.i]; l.style.transition='none'; l.style.zIndex=100; l.style.opacity=1; l.style.transform=`rotateY(${a}deg)`;
+});
+function end(){
+  if(!drag) return;
+  const d=drag; drag=null;
+  if(d.bad) return;
+  if(!d.moved){ go(d.x>innerWidth/2?1:-1); return; }
+  if(d.p>.25) cur+=d.dir;
+  render(d.i);
+}
+stage.addEventListener('pointerup',end);
+stage.addEventListener('pointercancel',end);
+prev.onclick=()=>go(-1); next.onclick=()=>go(1);
+addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+function onResize(){ if(wantSingle()!==single) build(); else {size();render();} }
+addEventListener('resize',onResize);
+addEventListener('orientationchange',()=>setTimeout(onResize,250));
+
+/* start / rebuild the book; page shape follows your first photo */
+function start(){
+  setPages();
+  const probe=new Image();
+  probe.onload=()=>{ratio=Math.max(.55,Math.min(1.3,probe.naturalWidth/probe.naturalHeight)); build();};
+  probe.onerror=()=>build();
+  probe.src=url(LIST[0]);
+}
+
+start();
+
+/* falling snow */
+(function(){
+  const c=document.getElementById('snow'),x=c.getContext('2d');
+  let W,H,f=[];
+  const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function fit(){W=c.width=innerWidth;H=c.height=innerHeight;f=Array.from({length:Math.round(W*H/9000)},()=>({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*3,s:.4+Math.random()*1.2,d:Math.random()*6}));}
+  function tick(t){
+    x.clearRect(0,0,W,H);x.fillStyle='rgba(255,255,255,.9)';
+    for(const p of f){
+      if(!still){p.y+=p.s;p.x+=Math.sin(t/1500+p.d)*.5;if(p.y>H+5){p.y=-5;p.x=Math.random()*W;}}
+      x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill();
+    }
+    if(!still)requestAnimationFrame(tick);
+  }
+  addEventListener('resize',fit);fit();requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
