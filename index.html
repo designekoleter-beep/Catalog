@@ -1,348 +1,279 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Christmas Catalog</title>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Catalog</title><!-- write your website title here -->
+<link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --red:#d9202f; --red-deep:#a30f1d; --cream:#fbf1e0; --paper:#fffaf0;
-  --pine:#1f5a3c; --gold:#e9c46a;
-}
-*{box-sizing:border-box;margin:0;padding:0}
+:root{--paper:#fffdf9;--gold:#f2c14e}
+*{box-sizing:border-box;margin:0}
 html,body{height:100%;overflow:hidden}
-body{
-  font-family:"Palatino Linotype",Palatino,Georgia,serif;
-  color:var(--cream);
-  background:
-    radial-gradient(circle at 18% 22%,rgba(255,255,255,.16) 0 70px,transparent 71px),
-    radial-gradient(circle at 82% 30%,rgba(255,235,200,.12) 0 110px,transparent 111px),
-    radial-gradient(circle at 70% 85%,rgba(255,255,255,.10) 0 90px,transparent 91px),
-    radial-gradient(circle at 50% 38%,#f0323f 0%,#d9202f 48%,#aa1220 100%);
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;-webkit-user-select:none;
-}
-#title{position:fixed;top:70px;left:0;right:0;text-align:center;font-size:clamp(20px,3.4vw,40px);letter-spacing:.04em;z-index:3;pointer-events:none;text-shadow:0 2px 10px rgba(0,0,0,.25)}
-#title:empty{display:none}
-
-/* ---------- book ---------- */
-#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding-top:44px;padding-bottom:64px;z-index:2;perspective:2600px}
-#book{position:relative;width:var(--W);height:var(--H);touch-action:none;cursor:grab;transition:transform .7s cubic-bezier(.4,.1,.2,1)}
-#book:active{cursor:grabbing}
-.board{display:none;position:absolute;top:-9px;bottom:-9px;background:linear-gradient(145deg,#1f6b45,#134a2e);border-radius:6px;box-shadow:0 6px 14px rgba(60,0,0,.35),inset 0 0 0 2px rgba(233,196,106,.55);transition:opacity .5s}
-.board.r{left:0;right:-10px;border-radius:4px 10px 10px 4px}
-.board.l{left:-10px;right:0;border-radius:10px 4px 4px 10px}
-.spread .board.r{left:50%}
-.spread .board.l{right:50%}
-.leaf{position:absolute;top:0;width:var(--W);height:var(--H);transform-origin:left center;transform-style:preserve-3d;will-change:transform}
-.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--paper);overflow:hidden;border-radius:2px 6px 6px 2px}
-.face.back{transform:rotateY(180deg);border-radius:6px 2px 2px 6px}
-.face img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
-.face .miss{position:absolute;inset:14px;border:2px dashed rgba(163,15,29,.45);border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;color:#a30f1d;font-size:15px;line-height:1.4;word-break:break-all}
-.face::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.30),rgba(0,0,0,.08) 5%,transparent 14%)}
-.face.back::before{background:linear-gradient(270deg,rgba(0,0,0,.30),rgba(0,0,0,.08) 5%,transparent 14%)}
-.face::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.05));opacity:var(--s,0)}
-.single .face{border-radius:6px}
-#book.end .face{box-shadow:0 4px 12px rgba(60,0,0,.35)}
-
-/* ---------- controls ---------- */
-#ui{position:fixed;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;align-items:center;gap:18px;z-index:6}
-#ui button{width:50px;height:50px;border-radius:50%;border:2px solid var(--gold);background:var(--cream);color:var(--red-deep);font-size:24px;line-height:1;cursor:pointer;box-shadow:0 6px 16px rgba(80,0,0,.35);transition:transform .15s,opacity .2s}
-#ui button:active{transform:scale(.92)}
-#ui button:disabled{opacity:.35;cursor:default}
-#ui button:focus-visible{outline:3px solid #fff;outline-offset:3px}
-#count{min-width:92px;text-align:center;font-size:17px;letter-spacing:.06em;text-shadow:0 1px 6px rgba(0,0,0,.3)}
-
-/* ---------- garland ---------- */
-#garland{position:fixed;top:0;left:0;right:0;height:0;z-index:5;pointer-events:none}
-#garland svg{position:absolute;top:0;left:0;overflow:visible}
-.bulb{position:absolute;width:12px;height:18px;margin:-3px 0 0 -6px;border-radius:50% 50% 55% 55%;background:var(--c);box-shadow:0 0 10px 3px var(--c),0 0 24px 8px color-mix(in srgb,var(--c) 45%,transparent);animation:tw 2.4s ease-in-out infinite;animation-delay:var(--d)}
-.bulb::before{content:"";position:absolute;left:3px;top:-5px;width:6px;height:6px;background:#3b3b3b;border-radius:1px}
-@keyframes tw{0%,100%{opacity:1;filter:brightness(1.15)}50%{opacity:.55;filter:brightness(.8)}}
-
-/* ---------- decorations ---------- */
-.deco{position:fixed;z-index:1;pointer-events:none}
-.ball{position:absolute;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff 0 7%,var(--c) 8% 55%,color-mix(in srgb,var(--c) 55%,#000) 100%);box-shadow:0 6px 12px rgba(60,0,0,.35)}
-.ball::before{content:"";position:absolute;left:50%;top:-7px;width:36%;height:9px;margin-left:-18%;background:var(--gold);border-radius:2px}
-.hang{position:fixed;z-index:5;pointer-events:none;transform-origin:top center;animation:sway 4s ease-in-out infinite;animation-delay:var(--d)}
-.hang i{position:absolute;left:0;top:0;width:1.5px;height:var(--len);background:rgba(255,235,200,.8)}
-.hang .ball{position:absolute;left:calc(var(--sz)/-2);top:var(--len)}
-@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-#snow{position:fixed;inset:0;z-index:4;pointer-events:none}
-@media (prefers-reduced-motion:reduce){.bulb,.hang{animation:none}}
-</style>
-</head>
-<body>
-
-<!-- =====================  PUT YOUR PHOTOS HERE  =====================
-     Each <img> = one page. First = cover, last = back cover.
-     Just change the src names (or add / delete lines). -->
-<div id="pages" hidden>
-  <img src="photos/Katalog festiv-01.png">
-  <img src="photos/Katalog festiv-02.png">
-  <img src="photos/Katalog festiv-03.png">
-  <img src="photos/Katalog festiv-04.png">
-  <img src="photos/Katalog festiv-05.png">
-  <img src="photos/Katalog festiv-06.png">
-  <img src="photos/Katalog festiv-07.png">
-  <img src="photos/Katalog festiv-08.png">
-  <img src="photos/Katalog festiv-09.png">
-  <img src="photos/Katalog festiv-10.png">
-  <img src="photos/Katalog festiv-11.png">
-  <img src="photos/Katalog festiv-12.png">
-  <img src="photos/foto last.png">
-</div>
-
-<div id="title"></div>
-<div id="garland"></div>
-<div id="decoL" class="deco"></div>
-<div id="decoR" class="deco"></div>
-
-<div id="stage"><div id="book" aria-label="Catalog book"></div></div>
-
-<div id="ui">
-  <button id="prev" aria-label="Previous page">&#8249;</button>
-  <div id="count"></div>
-  <button id="next" aria-label="Next page">&#8250;</button>
-</div>
+body{position:fixed;inset:0;font-family:Georgia,serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+background:linear-gradient(#060a22 0%,#0f1a52 36%,#27307f 60%,#6b4c9e 80%,#d08fa6 100%)}
+.au{position:fixed;left:-20%;width:140%;height:46%;pointer-events:none;opacity:.55;mix-blend-mode:screen;z-index:1;animation:drift 18s ease-in-out infinite alternate}
+.a1{top:2%;background:radial-gradient(ellipse 40% 50% at 30% 50%,#27f0b0aa,#27f0b000 70%),radial-gradient(ellipse 35% 40% at 68% 40%,#6a7bff99,#6a7bff00 70%)}
+.a2{top:12%;opacity:.4;animation-duration:25s;animation-direction:alternate-reverse;background:radial-gradient(ellipse 35% 45% at 55% 50%,#d27bff88,#d27bff00 70%),radial-gradient(ellipse 30% 40% at 20% 40%,#3be0ffaa,#3be0ff00 70%)}
+@keyframes drift{from{transform:translateX(-6%) skewX(-6deg)}to{transform:translateX(6%) skewX(6deg) scaleY(1.15)}}
+.moon{position:fixed;top:9%;right:9%;width:clamp(56px,9vw,110px);aspect-ratio:1;border-radius:50%;z-index:1;pointer-events:none;
+background:radial-gradient(circle at 35% 35%,#fffdf0,#ffeeb8 60%,#f3d58a);box-shadow:0 0 40px 12px #ffe9a855,0 0 140px 60px #ffe9a822}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+#bk,#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#bk{z-index:3}#fx{z-index:9}
+#ttl{position:fixed;left:0;right:0;z-index:10;text-align:center;color:#ffe9a8;padding:0 12px;pointer-events:none;
+font:700 clamp(24px,4.4vw,44px)/1.1 'Mountains of Christmas',Georgia,serif;text-shadow:0 0 20px #ffc86b99}
+#ttl:empty{display:none}
+#stage{position:fixed;left:0;right:0;z-index:5;display:flex;align-items:center;justify-content:center;touch-action:none}
+#book{position:relative;transform:translateX(0);transition:transform .7s cubic-bezier(.4,.1,.2,1)}
+.gr{position:absolute;left:3%;right:3%;bottom:-20px;height:32px;z-index:-1;background:radial-gradient(ellipse at 50% 50%,#050a3acc 0,#050a3a00 70%);filter:blur(7px)}
+#brd{position:absolute;top:-8px;height:calc(100% + 16px);border-radius:9px;background:linear-gradient(#1c2d78,#0a1240);
+box-shadow:0 0 70px 6px #ffc86b44,0 14px 30px #0009,inset 0 0 0 2px #f2c14e88;transition:left .7s,width .7s}
+.eg{position:absolute;top:3px;height:calc(100% - 6px);background:repeating-linear-gradient(90deg,#fffdf9 0 1px,#d6cdc0 1px 2px)}
+#org{position:absolute;top:0;height:100%;width:0;perspective:2400px}
+.lv{position:absolute;top:0;left:0;width:var(--pw);height:var(--ph);transform-origin:0 50%;transform-style:preserve-3d}
+.face{position:absolute;inset:0;overflow:hidden;background:var(--paper);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face.f{border-radius:0 5px 5px 0}.face.b{transform:rotateY(180deg);border-radius:5px 0 0 5px}
+.ph{position:absolute;inset:0}
+.ph img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
+.gut,.sh{position:absolute;inset:0;pointer-events:none}
+.f .gut{background:linear-gradient(90deg,#0004,#0001 5%,#0000 13%)}
+.b .gut{background:linear-gradient(270deg,#0004,#0001 5%,#0000 13%)}
+.sh{opacity:0;background:linear-gradient(90deg,#0a1040aa,#0a104000)}.b .sh{background:linear-gradient(270deg,#0a1040aa,#0a104000)}
+.ca{position:absolute;top:0;height:100%;z-index:500;opacity:0;pointer-events:none}
+#cR{background:linear-gradient(90deg,#0a104099,#0a104000)}#cL{background:linear-gradient(270deg,#0a104099,#0a104000)}
+#snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:12}
+#ctl{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));z-index:30;display:flex;align-items:center;gap:12px;
+padding:6px 10px;border-radius:32px;border:2px solid var(--gold);background:linear-gradient(#1c2d78,#0a1240);color:#ffe9a8;font:700 15px/1 Georgia,serif;box-shadow:0 6px 16px #0009}
+#ctl button{width:40px;height:40px;border-radius:50%;border:0;background:var(--gold);color:#0a1240;font:700 26px/1 Georgia,serif;cursor:pointer;padding-bottom:3px}
+#ctl button:disabled{opacity:.35;cursor:default}#ctl button:focus-visible{outline:3px solid #fff}
+#cnt{min-width:78px;text-align:center}
+.sw{transform-box:fill-box;transform-origin:50% 0;animation:sw 3.4s ease-in-out infinite}
+@keyframes sw{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes tw{0%,100%{opacity:.3}50%{opacity:1}}
+#sl{position:fixed;left:0;right:0;bottom:70px;height:var(--sgh,88px);overflow:hidden;z-index:4;pointer-events:none}
+.sg{position:absolute;left:0;bottom:0;height:100%;width:auto;animation:run 26s linear infinite;animation-delay:-5s}
+@keyframes run{from{transform:translateX(-100%)}to{transform:translateX(100vw)}}
+.bob{animation:bob .5s ease-in-out infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-3px)}}
+.lg{transform-box:fill-box;transform-origin:50% 0;animation:lg .5s ease-in-out infinite alternate}
+@keyframes lg{from{transform:rotate(-28deg)}to{transform:rotate(28deg)}}
+.wv{transform-box:fill-box;transform-origin:0 100%;animation:wv .6s ease-in-out infinite alternate}
+@keyframes wv{from{transform:rotate(-10deg)}to{transform:rotate(14deg)}}
+.up,.lo{transform-box:fill-box;transform-origin:50% 0;animation:up .5s ease-in-out infinite alternate}
+.lo{animation-name:lo}
+@keyframes up{from{transform:rotate(-30deg)}to{transform:rotate(30deg)}}
+@keyframes lo{from{transform:rotate(40deg)}to{transform:rotate(5deg)}}
+.pf{transform-box:fill-box;transform-origin:50% 50%;animation:pf 1s linear infinite}
+@keyframes pf{from{opacity:.9;transform:translate(0,0) scale(.5)}to{opacity:0;transform:translate(-26px,-7px) scale(1.7)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}#book,#brd{transition-duration:.01s}}
+</style></head><body>
+<div class="au a1"></div><div class="au a2"></div><div class="moon"></div><canvas id="sky"></canvas>
+<svg id="bk"><g id="bkg"></g></svg>
+<div id="sl"></div>
+<h1 id="ttl"></h1><!-- write your title between the h1 tags -->
+<main id="stage"><div id="book"><i class="gr"></i><i id="brd"></i><i class="eg" id="eL"></i><i class="eg" id="eR"></i>
+<div id="org"><i class="ca" id="cL"></i><i class="ca" id="cR"></i></div></div></main>
+<svg id="fx"><defs>
+<linearGradient id="gS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6eeff"/><stop offset="1" stop-color="#8ea3de"/></linearGradient>
+<linearGradient id="gF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9c8ff" stop-opacity="0"/><stop offset="1" stop-color="#b9c8ff" stop-opacity=".35"/></linearGradient>
+<linearGradient id="gDeer" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a4619"/><stop offset=".45" stop-color="#b47636"/><stop offset="1" stop-color="#e3bc88"/></linearGradient>
+<linearGradient id="gRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2475a"/><stop offset=".5" stop-color="#d01a30"/><stop offset="1" stop-color="#8f0b20"/></linearGradient>
+<linearGradient id="gSl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ea2a44"/><stop offset="1" stop-color="#9a0e25"/></linearGradient>
+<linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#f2c14e"/><stop offset="1" stop-color="#b9770e"/></linearGradient>
+<linearGradient id="gFur" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#d9e1ef"/></linearGradient>
+<radialGradient id="gSkin" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#ffe7d2"/><stop offset="1" stop-color="#f0b18c"/></radialGradient>
+<filter id="bl" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="5"/></filter></defs><g id="fxg"></g></svg>
 <canvas id="snow"></canvas>
+<nav id="ctl"><button id="pv" aria-label="Previous page">&#8249;</button><span id="cnt"></span><button id="nx" aria-label="Next page">&#8250;</button></nav>
+
+<!-- YOUR PHOTOS: one <img> per page, in order. The first one is the cover. -->
+<!-- Add or remove lines freely. The cover is a normal page, so use your cover photo as the first line. -->
+<div id="photos" hidden>
+<img src="photos/Katalog festiv-01.png" alt="">
+<img src="photos/Katalog festiv-02.png" alt="">
+<img src="photos/Katalog festiv-03.png" alt="">
+<img src="photos/Katalog festiv-04.png" alt="">
+<img src="photos/Katalog festiv-05.png" alt="">
+<img src="photos/Katalog festiv-06.png" alt="">
+<img src="photos/Katalog festiv-07.png" alt="">
+<img src="photos/Katalog festiv-08.png" alt="">
+<img src="photos/Katalog festiv-09.png" alt="">
+<img src="photos/Katalog festiv-11.png" alt="">
+<img src="photos/Katalog festiv-12.png" alt="">
+<img src="photos/foto last.png" alt="">
+</div>
 
 <script>
-/* =====================  EDIT HERE  ===================== */
-const TITLE = "";                 // write your website title here (empty = no title)
-const IMAGE_FOLDER = "";
-const PAGES = [...document.querySelectorAll("#pages img")].map(i => i.getAttribute("src"));   // read from the <img> tags in the HTML
-let PAGE_RATIO = 3/4;           // page width / height (3/4 = tall page, 1 = square, 4/3 = wide)
-/* ======================================================= */
+const RATIO=1; // page width / height. 1 = square pages, made for 38.1 x 38.1 cm photos. For other shapes use e.g. 3/4 or 4/3.
+const $=s=>document.querySelector(s);
+const srcs=[...document.querySelectorAll('#photos img')].map(i=>({s:i.getAttribute('src'),a:i.alt}));
+const n=srcs.length,book=$('#book'),brd=$('#brd'),eR=$('#eR'),eL=$('#eL'),cR=$('#cR'),cL=$('#cL'),org=$('#org'),pv=$('#pv'),nx=$('#nx'),cnt=$('#cnt'),st=$('#stage');
+let spread=false,L=0,maxK=0,k=0,pw=0,ph=0,leaves=[],g=null;
 
-const $ = s => document.querySelector(s);
-const book = $("#book"), N = PAGES.length;
-$("#title").textContent = TITLE;
-let SP = [], spread = false, L = 0, cur = 0, A = [], leaves = [], busy = false, W = 0, H = 0;
+function face(i,side){
+ const d=document.createElement('div');d.className='face '+side;
+ if(i!=null&&i<n){const p=document.createElement('div'),im=new Image();p.className='ph';im.src=srcs[i].s;im.alt=srcs[i].a;im.draggable=false;
+  im.onerror=()=>im.style.visibility='hidden';p.append(im);d.append(p);}
+ d.insertAdjacentHTML('beforeend','<i class="gut"></i><i class="sh"></i>');return d;}
 
-const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
-
-function pageEl(i, back){
-  const d = document.createElement("div");
-  d.className = "face" + (back ? " back" : "");
-  const list = spread ? SP : PAGES;
-  if (i >= 0 && i < list.length && list[i]){
-    const img = new Image();
-    img.draggable = false; img.alt = "Page " + (i+1);
-    img.src = IMAGE_FOLDER + list[i];
-    img.onerror = () => { img.remove(); const m=document.createElement("div"); m.className="miss"; m.textContent="Photo not found: "+IMAGE_FOLDER+list[i]; d.prepend(m); };
-    d.appendChild(img);
-  }
-  return d;
+function build(){
+ org.querySelectorAll('.lv').forEach(e=>e.remove());leaves=[];
+ L=spread?Math.ceil(n/2):n;maxK=spread?(n%2?L-1:L):n-1;k=Math.max(0,Math.min(k,maxK));
+ for(let i=0;i<L;i++){const e=document.createElement('div');e.className='lv';
+  e.append(face(spread?2*i:i,'f'),face(spread?2*i+1:null,'b'));org.append(e);
+  const l={e,i,th:i<k?180:0,busy:0};leaves.push(l);}
 }
-
-function build(keepPage){
-  const vw = innerWidth, vh = innerHeight;
-  spread = vw >= 900 && vw > vh;
-  const availH = vh - 44 - 64 - 80;
-  const availW = spread ? (vw - 90) / 2 : vw - 28;
-  W = Math.floor(Math.min(availW, availH * PAGE_RATIO)); H = Math.floor(W / PAGE_RATIO);
-  book.style.setProperty("--W", W + "px"); book.style.setProperty("--H", H + "px");
-  book.style.width = (spread ? W*2 : W) + "px";
-  book.className = spread ? "spread" : "single";
-  book.innerHTML = "";
-  const br = document.createElement("div"); br.className = "board r"; book.appendChild(br);
-  if (spread){ const bl = document.createElement("div"); bl.className = "board l"; book.appendChild(bl); }
-  /* odd number of photos: put the empty sheet before the last photo, so the last photo is always the final page */
-  SP = N % 2 ? [...PAGES.slice(0,N-1), "", PAGES[N-1]] : PAGES;
-  L = spread ? SP.length/2 : N;
-  cur = spread ? Math.min(L, Math.ceil(keepPage/2)) : Math.min(L, keepPage);
-  A = []; leaves = [];
-  for (let j=0;j<L;j++){
-    const lf = document.createElement("div"); lf.className = "leaf";
-    if (spread){
-      lf.style.left = W + "px";
-      lf.appendChild(pageEl(2*j, false)); lf.appendChild(pageEl(2*j+1, true));
-    } else lf.appendChild(pageEl(j, false));
-    book.appendChild(lf); leaves.push(lf); A.push(j < cur ? 1 : 0);
-  }
-  render();
+function paint(l){
+ const t=l.th,s=Math.sin(t*Math.PI/180);
+ l.e.style.transform=`rotateY(${-t}deg)`;
+ l.e.children[0].lastChild.style.opacity=l.e.children[1].lastChild.style.opacity=s*.5;
+ l.e.style.zIndex=l.busy?1000:(t>=90?l.i+1:L-l.i+1);
+ l.e.style.visibility=(!spread&&t>=179.5&&!l.busy)?'hidden':'visible';
 }
-
-function render(){
-  leaves.forEach((lf,j)=>{
-    const a = A[j];
-    if (spread){
-      lf.style.transform = `rotateY(${-180*a}deg)`;
-      lf.style.zIndex = a < .5 ? L - j : j;
-    } else {
-      lf.style.transform = `rotateY(${-100*a}deg)`;
-      lf.style.opacity = a > .8 ? Math.max(0,(1-a)/.2) : 1;
-      lf.style.zIndex = L - j;
-      lf.style.visibility = a >= .999 ? "hidden" : "visible";
-    }
-    lf.style.setProperty("--s", (Math.sin(Math.PI*a)*.3).toFixed(3));
-  });
-  /* centre the book when only one side is showing */
-  if (spread){
-    book.style.transform = cur===0 ? `translateX(-25%)` : cur===L ? `translateX(25%)` : "translateX(0)";
-    const r = book.querySelector(".board.r"), l = book.querySelector(".board.l");
-    r.style.opacity = cur===L ? 0 : 1; l.style.opacity = (cur===0 || cur===L) ? 0 : 1;
-    book.classList.toggle("end", cur===0 || cur===L);
-  }
-  $("#prev").disabled = cur<=0; $("#next").disabled = cur>=L;
-  let t;
-  if (spread) t = cur===0 ? `1 / ${N}` : cur===L ? `${N} / ${N}` : `${2*cur}–${2*cur+1} / ${N}`;
-  else t = `${Math.min(cur+1,N)} / ${N}`;
-  $("#count").textContent = t;
+function cast(){
+ let a=0,x=0,b=0,y=0;
+ leaves.forEach(l=>{const t=l.th;if(t<.5||t>179.5)return;const r=t*Math.PI/180,c=Math.cos(r),s=Math.sin(r);
+  if(t<90){if(s>a){a=s;x=pw*c}}else if(spread&&s>b){b=s;y=pw*c}});
+ const w=Math.min(pw-x,pw*.5);cR.style.cssText=`left:${x}px;width:${w}px;opacity:${a}`;
+ const v=Math.min(pw+y,pw*.5);cL.style.cssText=`left:${y-v}px;width:${v}px;opacity:${b}`;
 }
-
-function tween(j, to, done){
-  busy = true;
-  const from = A[j], dur = 160 + 620*Math.abs(to-from), t0 = performance.now();
-  (function step(now){
-    const k = Math.min(1,(now-t0)/dur);
-    A[j] = from + (to-from)*ease(k); render();
-    if (k<1) requestAnimationFrame(step); else { A[j]=to; busy=false; done&&done(); }
-  })(t0);
+function state(){
+ const wd=v=>v>0?Math.min(7,1+v*1.6):0,W=wd(L-k),re=spread?2*pw:pw;
+ eR.style.cssText=`left:${re-3}px;width:${W?W+3:0}px`;
+ if(spread){const w2=wd(k);eL.style.cssText=`left:${-w2}px;width:${w2?w2+3:0}px`}else eL.style.cssText='width:0';
+ const lb=spread?(k>0?-8:pw):-7,rb=spread?(k<L?2*pw+8:pw):pw+7;
+ brd.style.left=lb+'px';brd.style.width=(rb-lb)+'px';
+ book.style.transform=`translateX(${spread?(k==0?-pw/2:k==L?pw/2:0):0}px)`;
+ pv.disabled=k<=0;nx.disabled=k>=maxK;
+ cnt.textContent=(spread?(k==0?1:k==L?n:(2*k)+' \u2013 '+(2*k+1)):k+1)+' / '+n;
 }
-function go(dir){
-  if (busy) return;
-  if (dir>0 && cur<L){ tween(cur,1,()=>{cur++;render();}); }
-  else if (dir<0 && cur>0){ tween(cur-1,0,()=>{cur--;render();}); }
-}
-
-/* ---- drag / swipe / tap ---- */
-let drag = null;
-book.addEventListener("pointerdown", e=>{
-  if (busy) return;
-  drag = {x:e.clientX, t:performance.now(), dir:0, j:-1, moved:false, lx:e.clientX, lt:performance.now(), v:0};
-  book.setPointerCapture(e.pointerId);
-});
-book.addEventListener("pointermove", e=>{
-  if (!drag) return;
-  const dx = e.clientX - drag.x;
-  if (!drag.dir && Math.abs(dx) > 8){
-    drag.dir = dx<0 ? 1 : -1;
-    drag.j = drag.dir>0 ? cur : cur-1;
-    if (drag.j<0 || drag.j>=L){ drag = null; return; }
-  }
-  if (drag.dir){
-    drag.moved = true;
-    const p = Math.min(1, Math.abs(dx) / (spread ? W*1.1 : W*.8));
-    A[drag.j] = drag.dir>0 ? p : 1-p; render();
-    const now = performance.now(); drag.v = (e.clientX-drag.lx)/Math.max(1,now-drag.lt); drag.lx=e.clientX; drag.lt=now;
-  }
-});
-function endDrag(e){
-  if (!drag) return;
-  const d = drag; drag = null;
-  if (!d.moved){
-    const r = book.getBoundingClientRect();
-    go(e.clientX > r.left + r.width/2 ? 1 : -1); return;
-  }
-  const flipped = d.dir>0 ? A[d.j] : 1-A[d.j];
-  const fast = Math.abs(d.v) > .5 && Math.sign(d.v) === -d.dir;
-  const ok = flipped > .28 || fast;
-  const target = d.dir>0 ? (ok?1:0) : (ok?0:1);
-  tween(d.j, target, ()=>{ if(ok){ cur += d.dir; } render(); });
-}
-book.addEventListener("pointerup", endDrag);
-book.addEventListener("pointercancel", endDrag);
-$("#next").onclick = ()=>go(1); $("#prev").onclick = ()=>go(-1);
-addEventListener("keydown", e=>{ if(e.key==="ArrowRight") go(1); if(e.key==="ArrowLeft") go(-1); });
-
-/* ---- garland lights ---- */
-const COLORS = ["#ff4b4b","#ffd34d","#5bd16f","#4db8ff","#ff8ad8","#fff1b8"];
-const rnd = (a,b)=>a+Math.random()*(b-a);
-function buildGarland(){
-  const g = $("#garland"); g.innerHTML = "";
-  document.querySelectorAll(".hang").forEach(n=>n.remove());
-  const w = innerWidth, seg = w<600 ? 110 : 160, n = Math.ceil(w/seg), sag = w<600 ? 16 : 24;
-  let d = "M0,6";
-  for (let i=0;i<n;i++) d += ` Q${i*seg+seg/2},${6+sag*2} ${(i+1)*seg},6`;
-  g.insertAdjacentHTML("beforeend",
-    `<svg width="${w}" height="${sag*2+20}"><path d="${d}" fill="none" stroke="#164a30" stroke-width="7" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#3c9a63" stroke-width="3" stroke-dasharray="2 5" stroke-linecap="round"/></svg>`);
-  let k = 0;
-  for (let i=0;i<n;i++){
-    const x0=i*seg, xc=x0+seg/2, x1=x0+seg;
-    [.2,.5,.8].forEach(t=>{
-      const x=(1-t)*(1-t)*x0+2*(1-t)*t*xc+t*t*x1, y=(1-t)*(1-t)*6+2*(1-t)*t*(6+sag*2)+t*t*6;
-      const b = document.createElement("div"); b.className="bulb";
-      b.style.cssText = `left:${x}px;top:${y}px;--c:${COLORS[k++%COLORS.length]};--d:${(-Math.random()*2.4).toFixed(2)}s`;
-      g.appendChild(b);
-      if (t===.5 && i%2===1 && i>0 && i<n-1){
-        const sz = rnd(26,36), h = document.createElement("div"); h.className="hang";
-        h.style.cssText = `left:${x}px;top:${y+10}px;--len:${rnd(30,80)}px;--sz:${sz}px;--d:${(-Math.random()*4).toFixed(1)}s`;
-        h.innerHTML = `<i></i><div class="ball" style="--c:${["#c8102e","#e9c46a","#1f7a4d","#f2e6d0"][i%4]};width:${sz}px;height:${sz}px"></div>`;
-        document.body.appendChild(h);
-      }
-    });
-  }
-}
-
-/* ---- pine branches + ornaments in the corners ---- */
-function branch(w){
-  const h = w*.5, mid = h/2; let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><path d="M0,${mid} Q${w/2},${mid-8} ${w},${mid}" stroke="#4a2f1b" stroke-width="5" fill="none" stroke-linecap="round"/>`;
-  for (let t=.03;t<.97;t+=.03){
-    const x=t*w, len=(1-t*.72)*h*.5, c=Math.random()<.5?"#1f5a3c":"#2f7f50";
-    for (const sg of [-1,1]){
-      s += `<line x1="${x}" y1="${mid}" x2="${x+len*.55}" y2="${mid+sg*len}" stroke="${c}" stroke-width="3.4" stroke-linecap="round"/>`;
-      s += `<line x1="${x}" y1="${mid}" x2="${x+len*.9}" y2="${mid+sg*len*.55}" stroke="#143f2a" stroke-width="2.6" stroke-linecap="round"/>`;
-    }
-  }
-  return s + "</svg>";
-}
-function buildDeco(){
-  const small = innerWidth < 700, w = small ? 190 : Math.min(420, innerWidth*.3);
-  const L_ = $("#decoL"), R_ = $("#decoR");
-  L_.style.cssText = `left:-12px;bottom:${small?60:-6}px;transform-origin:left bottom;transform:rotate(-12deg)`;
-  R_.style.cssText = `right:-12px;bottom:${small?60:-6}px;transform-origin:right bottom;transform:scaleX(-1) rotate(-12deg)`;
-  L_.innerHTML = R_.innerHTML = "";
-  for (const el of [L_,R_]){
-    el.insertAdjacentHTML("beforeend", branch(w));
-    el.insertAdjacentHTML("beforeend", branch(w*.75).replace("<svg",`<svg style="position:absolute;left:12px;top:${w*.18}px;transform:rotate(-26deg)"`));
-    const cols = ["#c8102e","#e9c46a","#f2e6d0","#1f7a4d"];
-    [[.2,.38,small?22:34],[.45,.5,small?16:26],[.62,.3,small?20:30],[.3,.6,small?14:20]].forEach(([x,y,sz],i)=>{
-      el.insertAdjacentHTML("beforeend",`<div class="ball" style="--c:${cols[i%4]};width:${sz}px;height:${sz}px;left:${x*w}px;top:${y*w*.5}px"></div>`);
-    });
-  }
-}
-
-/* ---- falling snow ---- */
-const cv = $("#snow"), cx = cv.getContext("2d"); let flakes = [];
-function sizeSnow(){
-  const dpr = Math.min(2, devicePixelRatio||1);
-  cv.width = innerWidth*dpr; cv.height = innerHeight*dpr; cx.setTransform(dpr,0,0,dpr,0,0);
-  const count = matchMedia("(prefers-reduced-motion:reduce)").matches ? 40 : Math.round(innerWidth*innerHeight/9000)+60;
-  flakes = Array.from({length:count},()=>({x:rnd(0,innerWidth),y:rnd(0,innerHeight),r:rnd(1.2,4.6),v:rnd(.4,1.5),p:rnd(0,6.28),a:rnd(.5,.95)}));
-}
-let tt = 0;
-(function snow(){
-  cx.clearRect(0,0,innerWidth,innerHeight); tt += .01;
-  for (const f of flakes){
-    f.y += f.v*(.6+f.r*.25); f.x += Math.sin(tt*2+f.p)*.5*(f.r/3);
-    if (f.y > innerHeight+6){ f.y = -6; f.x = rnd(0,innerWidth); }
-    cx.beginPath(); cx.arc(f.x,f.y,f.r,0,6.283);
-    cx.fillStyle = `rgba(255,255,255,${f.a})`; cx.shadowColor = "rgba(255,255,255,.9)"; cx.shadowBlur = f.r*2.2; cx.fill();
-  }
-  requestAnimationFrame(snow);
-})();
-
-/* ---- start ---- */
-function pageNow(){ return spread ? cur*2 : cur; }
-let rt; let first = true;
 function layout(){
-  build(first ? 0 : Math.min(N-1, pageNow()));
-  first = false; buildGarland(); buildDeco(); sizeSnow();
+ const vw=innerWidth,vh=innerHeight,s=vh<520,sp=vw>=900&&!s;
+ if(sp!==spread||!leaves.length){const p=spread?Math.min(2*k,n-1):k;spread=sp;k=sp?Math.ceil(p/2):p;build();}
+ const base=s?58:96,t=$('#ttl');t.style.top=(base-6)+'px';
+ const top=base+(t.offsetHeight?t.offsetHeight+4:0),bot=s?52:158;
+ st.style.top=top+'px';st.style.bottom=bot+'px';
+ const aw=vw-(spread?150:24),ah=Math.max(140,vh-top-bot-18);
+ pw=Math.floor(Math.max(90,Math.min(aw/(spread?2:1),ah*RATIO)));ph=Math.floor(pw/RATIO);
+ const r=document.documentElement.style;r.setProperty('--pw',pw+'px');r.setProperty('--ph',ph+'px');r.setProperty('--sgh','88px');$('#sl').style.display=s?'none':'block';
+ book.style.width=(spread?2*pw:pw)+'px';book.style.height=ph+'px';
+ org.style.left=(spread?pw:0)+'px';org.style.perspectiveOrigin=spread?'0 50%':(pw/2)+'px 50%';
+ leaves.forEach(paint);cast();state();decor(vw,vh,s);snowInit();
 }
-addEventListener("resize", ()=>{ clearTimeout(rt); rt = setTimeout(layout, 180); });
-layout();
+function anim(l,to){
+ l.busy=1;state();const from=l.th,dur=Math.max(240,Math.abs(to-from)/180*850),t0=performance.now();
+ (function f(t){const p=Math.min(1,(t-t0)/dur),e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+  l.th=p<1?from+(to-from)*e:to;if(p>=1)l.busy=0;paint(l);cast();if(p<1)requestAnimationFrame(f)})(t0);
+}
+function go(d){
+ const f=d>0,i=f?k:k-1;if(i<0||(f&&k>=maxK))return;const l=leaves[i];if(l.busy)return;
+ f?k++:k--;anim(l,f?180:0);
+}
+st.addEventListener('pointerdown',e=>{if(e.button>0)return;g={x:e.clientX,y:e.clientY,l:null,vx:0,lx:e.clientX,lt:performance.now()};st.setPointerCapture(e.pointerId)});
+st.addEventListener('pointermove',e=>{
+ if(!g)return;const dx=e.clientX-g.x,r=book.getBoundingClientRect();
+ if(!g.l){if(Math.abs(dx)<8)return;
+  const f=spread?g.x>r.left+r.width/2:dx<0,i=f?k:k-1;
+  if(i<0||(f&&k>=maxK)||leaves[i].busy){g=null;return}
+  g.l=leaves[i];g.f=f;g.l.busy=1;g.sp=r.left+(spread?pw:0);}
+ const now=performance.now();if(now-g.lt>8){g.vx=(e.clientX-g.lx)/(now-g.lt);g.lx=e.clientX;g.lt=now}
+ let th;
+ if(spread){const edge=(g.f?g.sp+pw:g.sp-pw)+(e.clientX-g.x)*1.25;th=Math.acos(Math.max(-1,Math.min(1,(edge-g.sp)/pw)))*180/Math.PI}
+ else{const u=Math.max(0,Math.min(1,(g.f?g.x-e.clientX:e.clientX-g.x)/(pw*.85)));th=g.f?u*180:180-u*180}
+ g.l.th=th;paint(g.l);cast();
+});
+function end(e,cancel){
+ if(!g)return;const q=g;g=null;
+ if(!q.l){if(!cancel&&Math.abs(e.clientX-q.x)<8&&Math.abs(e.clientY-q.y)<8){const r=book.getBoundingClientRect();go(e.clientX>r.left+r.width/2?1:-1)}return}
+ const l=q.l;let to;
+ if(q.f){const ok=!cancel&&(l.th>70||q.vx<-.35);to=ok?180:0;if(ok)k++}
+ else{const ok=!cancel&&(l.th<110||q.vx>.35);to=ok?0:180;if(ok)k--}
+ anim(l,to);
+}
+st.addEventListener('pointerup',e=>end(e,false));
+st.addEventListener('pointercancel',e=>end(e,true));
+pv.onclick=()=>go(-1);nx.onclick=()=>go(1);
+addEventListener('keydown',e=>{if(e.key=='ArrowRight'||e.key=='PageDown')go(1);else if(e.key=='ArrowLeft'||e.key=='PageUp')go(-1)});
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(layout,80)});
 
-/* the book takes the shape of your cover photo, so photos fit the pages exactly */
-const probe = new Image();
-probe.onload = () => {
-  if (probe.naturalWidth && probe.naturalHeight){
-    PAGE_RATIO = Math.min(2.5, Math.max(.4, probe.naturalWidth / probe.naturalHeight));
-    layout();
-  }
-};
-probe.src = IMAGE_FOLDER + PAGES[0];
+/* ---------- winter night scenery ---------- */
+function decor(vw,vh,sh){
+ const fx=$('#fx'),bk=$('#bk');[fx,bk].forEach(e=>{e.setAttribute('viewBox',`0 0 ${vw} ${vh}`);e.style.cssText=`top:auto;bottom:0;width:${vw}px;height:${vh}px`});
+ let r=7;const R=()=>(r=(r*16807)%2147483647)/2147483647;
+ const tri=(x,yb,w,yt)=>`M${x-w/2} ${yb}L${x} ${yt}L${x+w/2} ${yb}Z`;
+ const tree=(x,b,h,w)=>tri(x,b,w,b-h*.5)+tri(x,b-h*.28,w*.74,b-h*.78)+tri(x,b-h*.55,w*.5,b-h);
+ const sc=Math.max(.9,Math.min(1.25,vw/900));let o='';
+ [['#2f3d96',.80,.17,1],['#1d2a70',.86,.23,1.25],['#0f1848',.92,.3,1.6]].forEach(([c,b,hh,k],li)=>{
+  const base=vh*b;let d='',x=-30;
+  while(x<vw+40){const w=(34+R()*34)*sc*k,h=Math.min(w*(2.3+R()*1.2),vh*hh*1.4)*(sh?.7:1);d+=tree(x,base+8,h,w);x+=w*(.45+R()*.45)}
+  o+=`<path d="${d}" fill="${c}"/><rect x="0" y="${base}" width="${vw}" height="${vh-base}" fill="${c}"/>`;
+  if(li==0)o+=`<rect x="0" y="${base-vh*.12}" width="${vw}" height="${vh*.16}" fill="url(#gF)"/>`;
+  if(li==1){const hx=vw*(vw<700?.14:.2),hs=44*sc,hy=base-2;
+   o+=`<path d="M${hx} ${hy}v${-hs*.6}l${hs*.5} ${-hs*.45}l${hs*.5} ${hs*.45}v${hs*.6}z" fill="#0b1240"/><rect x="${hx+hs*.62}" y="${hy-hs*.98}" width="${hs*.12}" height="${hs*.3}" fill="#0b1240"/>`+
+   `<rect x="${hx+hs*.35}" y="${hy-hs*.45}" width="${hs*.3}" height="${hs*.26}" fill="#ffb84d" filter="url(#bl)"/><rect x="${hx+hs*.35}" y="${hy-hs*.45}" width="${hs*.3}" height="${hs*.26}" fill="#ffe08a"/>`}
+ });
+ const dh=sh?Math.min(74,vh*.1):118;
+ o+=`<path d="M0 ${vh}V${vh-dh*.6}Q${vw*.14} ${vh-dh*1.1} ${vw*.3} ${vh-dh*.7}T${vw*.6} ${vh-dh*.8}T${vw} ${vh-dh*.7}V${vh}Z" fill="url(#gS)"/>`;
+ bk.querySelector('#bkg').innerHTML=o;
+}
+
+/* ---------- stars, floating golden lights, falling snow ---------- */
+const cv=$('#snow'),cx=cv.getContext('2d'),sk=$('#sky'),sx=sk.getContext('2d'),still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let fl=[],stars=[],orbs=[],run=false;
+const spr=document.createElement('canvas');spr.width=spr.height=64;
+{const c=spr.getContext('2d'),gr=c.createRadialGradient(32,32,0,32,32,32);gr.addColorStop(0,'#fff6c8');gr.addColorStop(.25,'#ffd26b');gr.addColorStop(1,'#ffb43000');c.fillStyle=gr;c.fillRect(0,0,64,64)}
+function snowInit(){
+ const d=Math.min(devicePixelRatio||1,2),W=innerWidth,H=innerHeight,ar=(c,f)=>Array.from({length:c},f);
+ [cv,sk].forEach(c=>{c.width=W*d;c.height=H*d;c.getContext('2d').setTransform(d,0,0,d,0,0)});
+ fl=ar(Math.max(50,Math.min(150,W*H/9000|0)),()=>({x:Math.random()*W,y:Math.random()*H,r:.8+Math.random()*3.2,s:.3+Math.random()*1.1,p:Math.random()*6.3,a:.4+Math.random()*.55}));
+ stars=ar(Math.round(W*H/5500),()=>({x:Math.random()*W,y:Math.random()*H*.62,r:.4+Math.random()*1.3,p:Math.random()*6.3}));
+ orbs=ar(W<700?9:16,()=>({x:Math.random()*W,y:Math.random()*H,z:14+Math.random()*34,s:.12+Math.random()*.3,p:Math.random()*6.3}));
+ if(!run){run=true;requestAnimationFrame(frame)}
+}
+function frame(t){
+ const W=innerWidth,H=innerHeight;sx.clearRect(0,0,W,H);cx.clearRect(0,0,W,H);sx.fillStyle='#fff';
+ for(const s of stars){sx.globalAlpha=.3+.7*Math.abs(Math.sin(t/900+s.p*3));sx.beginPath();sx.arc(s.x,s.y,s.r,0,6.3);sx.fill()}
+ for(const o of orbs){if(!still){o.y-=o.s;o.x+=Math.sin(t/2200+o.p)*.25;if(o.y<-50){o.y=H+50;o.x=Math.random()*W}}
+  sx.globalAlpha=.3+.45*Math.abs(Math.sin(t/1700+o.p));sx.drawImage(spr,o.x-o.z/2,o.y-o.z/2,o.z,o.z)}
+ cx.fillStyle='#fff';
+ for(const f of fl){if(!still){f.y+=f.s*(.6+f.r*.25);f.x+=Math.sin(t/1500+f.p)*.35;if(f.y>H+5){f.y=-5;f.x=Math.random()*W}}
+  cx.globalAlpha=f.a;cx.beginPath();cx.arc(f.x,f.y,f.r,0,6.3);cx.fill()}
+ if(!still)requestAnimationFrame(frame);
+}
+/* ---------- Santa, sleigh and reindeer (shaded, full colour) ---------- */
+const puff=(x,y,d)=>`<circle class="pf" cx="${x}" cy="${y}" r="4" fill="#fff" stroke="#cdd8f0" stroke-width=".6" style="animation-delay:${d}s"/>`;
+function deer(x,lead,i){
+ const leg=(lx,d,far)=>{const c=far?'#6b3a16':'#8a521f';
+  return `<g class="up" style="animation-delay:${d}s"><path d="M${lx} -27L${lx+1} -15" stroke="${c}" stroke-width="${far?4:4.6}" stroke-linecap="round" fill="none"/><g class="lo" style="animation-delay:${d}s"><path d="M${lx+1} -15L${lx+3} -3" stroke="${c}" stroke-width="2.8" stroke-linecap="round" fill="none"/><ellipse cx="${lx+3.6}" cy="-1.4" rx="2.8" ry="1.7" fill="#2a1608"/></g></g>`};
+ const ant=(t,c)=>`<g transform="${t}" stroke="${c}" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M59 -66C57 -74 52 -80 46 -84M55 -76L60 -82M52 -80L55 -88M49 -82L44 -90M46 -84L40 -86M58 -70L66 -74"/></g>`;
+ return `<g class="bob" style="animation-delay:${-i*.17}s"><g transform="translate(${x} 0)">`+puff(6,-2,i*.3)+puff(14,-2,i*.3+.5)+
+  ant('translate(-4 2)','#5a4222')+leg(16,-.25,1)+leg(40,0,1)+
+  `<path d="M3 -39L-5 -43L-2 -34Z" fill="#f7efe2"/><path d="M2 -36C0 -44 10 -46 22 -45C34 -45 42 -44 46 -40C48 -34 46 -26 38 -24C28 -22 14 -22 6 -25C0 -28 0 -33 2 -36Z" fill="url(#gDeer)"/>`+
+  `<path d="M6 -26C14 -21 30 -21 40 -25C30 -24 14 -24 6 -26Z" fill="#5a3010" opacity=".4"/><path d="M8 -44C18 -46 32 -46 42 -43" stroke="#e8b878" stroke-width="1.6" opacity=".6" fill="none"/>`+
+  `<path d="M40 -42C46 -50 50 -58 54 -62L61 -56C56 -50 54 -42 52 -34Z" fill="url(#gDeer)"/><path d="M44 -40C48 -34 50 -30 46 -27C42 -30 41 -35 44 -40Z" fill="#f7efe2"/>`+
+  leg(10,-.25,0)+leg(34,0,0)+
+  `<path d="M44 -43C49 -41 52 -44 53 -48" stroke="#d9a21b" stroke-width="3" fill="none"/><circle cx="49" cy="-36" r="3" fill="url(#gGold)" stroke="#8a5a0a" stroke-width=".6"/>`+
+  `<path d="M54 -62C58 -66 64 -64 70 -58C74 -55 76 -52 74 -50C72 -48 66 -50 62 -52C58 -52 55 -56 54 -62Z" fill="url(#gDeer)"/><ellipse cx="74" cy="-52" rx="3.4" ry="2.6" fill="#3a1d0a"/><path d="M55 -64L50 -71L59 -66Z" fill="#8a5222"/><circle cx="61.5" cy="-59.5" r="1.4" fill="#1a0e05"/><circle cx="61" cy="-60" r=".5" fill="#fff"/>`+
+  ant('','#7a5c30')+(lead?`<circle cx="76" cy="-51" r="6" fill="#ff2a2a" filter="url(#bl)"/><circle cx="75.5" cy="-51" r="2.8" fill="#ff4a40"/>`:'')+`</g></g>`;
+}
+{
+ const sp=[[-52,-44,3],[-40,-26,2],[-30,-38,2.4],[-20,-14,2],[-8,-22,2.6]].map(([x,y,r],i)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#f5a800" style="animation:tw ${1.2+i*.2}s ${i*.3}s infinite ease-in-out"/>`).join('');
+ $('#sl').innerHTML=`<svg class="sg" viewBox="-60 -112 490 116"><ellipse cx="200" cy="3" rx="215" ry="4" fill="#1a2a6a" opacity=".22" filter="url(#bl)"/>`+sp+
+ `<g class="bob"><g transform="translate(70 0)">`+puff(-48,-1,0)+puff(-40,-1,.35)+puff(-30,-1,.7)+
+ `<rect x="-52" y="-52" width="18" height="16" rx="1.5" fill="#1f9d55"/><path d="M-43 -52V-36M-52 -44H-34" stroke="#f2c14e" stroke-width="2.4"/><rect x="-38" y="-63" width="15" height="14" rx="1.5" fill="#3b6fd8"/><path d="M-30.5 -63V-49M-38 -56H-23" stroke="#ffd0e0" stroke-width="2.2"/><circle cx="-30.5" cy="-65" r="2.8" fill="url(#gGold)"/>`+
+ `<path d="M-26 -38C-28 -58 -20 -68 -8 -68C6 -68 12 -58 12 -38Z" fill="url(#gRed)" stroke="#8f0b20" stroke-width="1"/><path d="M-18 -60C-16 -54 -17 -48 -20 -44M2 -62C4 -56 4 -50 6 -45" stroke="#8f0b20" stroke-width="1" fill="none" opacity=".7"/>`+
+ `<rect x="-26" y="-50" width="38" height="5" fill="#1c1c1c"/><rect x="-10" y="-51" width="8" height="7" rx="1" fill="url(#gGold)"/><ellipse cx="-7" cy="-67" rx="11" ry="3.6" fill="url(#gFur)"/>`+
+ `<path d="M-56 -50C-58 -34 -50 -18 -36 -14L44 -14C58 -14 66 -24 64 -38C58 -34 52 -38 48 -44L40 -40C20 -36 -20 -36 -34 -42C-42 -44 -46 -52 -56 -50Z" fill="url(#gSl)" stroke="#6d0a1a" stroke-width="1.2"/>`+
+ `<path d="M-38 -40C-20 -36 20 -36 40 -40M-38 -20H54" stroke="url(#gGold)" stroke-width="2.6" fill="none"/><circle cx="-47" cy="-30" r="4" fill="none" stroke="url(#gGold)" stroke-width="2"/>`+
+ `<path d="M-50 -4C-56 2 -46 6 -36 6L44 6C62 6 68 -4 66 -16C65 -22 60 -22 59 -18" fill="none" stroke="#7a4a0a" stroke-width="5.6" stroke-linecap="round"/><path d="M-50 -4C-56 2 -46 6 -36 6L44 6C62 6 68 -4 66 -16C65 -22 60 -22 59 -18" fill="none" stroke="url(#gGold)" stroke-width="3.6" stroke-linecap="round"/><path d="M-30 5V-14M18 5V-14" stroke="url(#gGold)" stroke-width="2.6"/>`+
+ `<path d="M6 -56C14 -54 20 -50 24 -46" stroke="url(#gRed)" stroke-width="8" stroke-linecap="round" fill="none"/><ellipse cx="24" cy="-46" rx="2.8" ry="5" fill="url(#gFur)" transform="rotate(-30 24 -46)"/><circle cx="28" cy="-45" r="4.2" fill="#1c1c1c"/>`+
+ `<ellipse cx="-14.5" cy="-77" rx="2.2" ry="2.8" fill="#f0b18c"/><ellipse cx="-14" cy="-73" rx="3" ry="4" fill="#fff"/><circle cx="-7" cy="-77" r="8" fill="url(#gSkin)"/><circle cx="-12" cy="-74" r="2.2" fill="#ff8f9d" opacity=".7"/><circle cx="-2" cy="-74" r="2.2" fill="#ff8f9d" opacity=".7"/>`+
+ `<ellipse cx="-10" cy="-78" rx="1.8" ry="1.2" fill="#fff"/><ellipse cx="-4" cy="-78" rx="1.8" ry="1.2" fill="#fff"/><circle cx="-10" cy="-78" r=".9" fill="#1e3a6a"/><circle cx="-4" cy="-78" r=".9" fill="#1e3a6a"/><path d="M-12.5 -80.5Q-10 -82 -7.5 -80.8M-6.5 -80.8Q-4 -82 -1.5 -80.5" stroke="#fff" stroke-width="1.3" fill="none"/>`+
+ `<path d="M-15 -72C-18 -60 -12 -50 -7 -48C-2 -50 4 -60 1 -72C-3 -66 -11 -66 -15 -72Z" fill="url(#gFur)" stroke="#c9d1e0" stroke-width=".8"/><path d="M-12 -62Q-10 -56 -8 -52M-4 -62Q-4 -56 -6 -52" stroke="#c4cddd" stroke-width=".8" fill="none"/>`+
+ `<path d="M-16 -73C-14 -77 -9 -75 -7 -73C-5 -75 0 -77 2 -73C0 -68 -5 -69 -7 -70C-9 -69 -14 -68 -16 -73Z" fill="#fff" stroke="#d3dae8" stroke-width=".6"/><circle cx="-7" cy="-74.5" r="2.4" fill="#f59aa6"/><path d="M-9 -68.6Q-7 -67 -5 -68.6" stroke="#c0505a" stroke-width=".9" fill="none"/>`+
+ `<path d="M-16 -83C-15 -97 -5 -104 -23 -101C-8 -110 6 -99 3 -83Z" fill="url(#gRed)" stroke="#8f0b20" stroke-width="1"/><rect x="-17.5" y="-86" width="22" height="6.5" rx="3.2" fill="url(#gFur)" stroke="#c9d1e0" stroke-width=".8"/><circle cx="-25" cy="-101" r="4.8" fill="url(#gFur)" stroke="#c9d1e0" stroke-width=".8"/>`+
+ `<g class="wv"><path d="M4 -62C10 -70 14 -76 17 -82" stroke="url(#gRed)" stroke-width="8" stroke-linecap="round" fill="none"/><ellipse cx="17.5" cy="-82" rx="5.4" ry="3" fill="url(#gFur)" transform="rotate(-60 17.5 -82)"/><circle cx="19" cy="-88" r="4.8" fill="#fff" stroke="#b7bfd0" stroke-width="1"/><ellipse cx="14.5" cy="-87" rx="1.8" ry="3" fill="#fff" stroke="#b7bfd0" stroke-width=".8" transform="rotate(-25 14.5 -87)"/></g>`+
+ `</g></g><path d="M98 -45Q140 -33 226 -37M132 -28Q152 -34 178 -34M225 -37L257 -39M303 -37L335 -39" fill="none" stroke="#d9a21b" stroke-width="1.4"/>`+
+ deer(176,0,0)+deer(254,0,1)+deer(332,1,2)+`</svg>`;
+}
+layout();
 </script>
-</body>
-</html>
+</body></html>
